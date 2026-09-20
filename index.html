@@ -75,6 +75,8 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
  .printPage.story .scribble{font-size:4mm!important;margin:2mm 0!important}
  .printPage.story .copy{font-size:4.2mm!important;line-height:1.55!important;margin-bottom:3mm!important}
  .printPage.story .photoHero{width:100%!important;height:128mm!important;object-fit:cover!important;margin-top:4mm!important}
+ .printPage.story .noPhotoFeature{min-height:125mm!important;margin-top:5mm!important;padding:10mm!important;border-radius:5mm!important}
+ .printPage.story .noPhotoFeature .quote{font-size:8mm!important;line-height:1.2!important}.printPage.story .noPhotoFeature .mini{font-size:3mm!important}
  .printPage.story .collage{display:grid!important;grid-template-columns:1fr 1fr!important;gap:3mm!important;margin-top:4mm!important}
  .printPage.story .collage img{width:100%!important;height:108mm!important;object-fit:cover!important}
  .printPage.story .gallery3{display:grid!important;grid-template-columns:1.15fr .85fr!important;grid-template-rows:54mm 54mm!important;gap:3mm!important;margin-top:4mm!important}
@@ -92,6 +94,12 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
 .photoManager:empty{display:none}.photoItem{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:center;margin:7px 0;padding:7px;border-radius:10px;background:#f5f3ee}
 .photoItem img{width:72px;height:62px;object-fit:cover;border-radius:8px}.photoBtns{display:flex;gap:5px;flex-wrap:wrap}.photoBtns button{font-size:10px;padding:6px 8px}
 .coverTools{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}.coverThumb{width:100%;height:115px;object-fit:cover;border-radius:10px;margin-top:8px}
+
+.noPhotoFeature{margin-top:18px;min-height:360px;border-radius:18px;position:relative;overflow:hidden;background:linear-gradient(145deg,#173247 0%,#244d68 58%,#e7b94f 160%);display:flex;align-items:flex-end;padding:30px;color:white}
+.noPhotoFeature:before{content:"";position:absolute;width:230px;height:230px;border:2px solid #ffffff26;border-radius:50%;right:-65px;top:-60px}
+.noPhotoFeature:after{content:"✦";position:absolute;right:28px;top:25px;font-size:48px;color:#f3cb7d}
+.noPhotoFeature .quote{position:relative;z-index:1;font-family:Georgia,serif;font-size:27px;line-height:1.25;max-width:82%}
+.noPhotoFeature .mini{display:block;font-family:"Trebuchet MS",sans-serif;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#f3cb7d;margin-bottom:10px}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body>
 <header><div class="brand"><small>LillyTech</small>Pet Stories Studio V2</div><div class="actions"><span id="cloudBadge" style="font-size:11px;align-self:center;color:#f3cb7d">☁ Supabase listo</span><button class="btn ghost" id="loginBtn">Entrar</button><button class="btn ghost" id="newBtn">Nuevo</button><button class="btn ghost" id="dupBtn">Duplicar</button><button class="btn gold" id="printBtn">Exportar / PDF</button></div></header>
@@ -146,7 +154,7 @@ function mainPhotoHTML(pics){
 }
 function storyHTML(c,n,cls='sheet story'){
   let pics=(c.photos||[]).slice(0,4);
-  return `<section class="${cls}"><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="date">${fmt(c.date)}</div><span class="scribble">${c.cat==='Travesura'?'archivo oficial de travesuras ✦':c.cat==='Momento épico'?'esto merecía una página ✦':'un momento para guardar ✦'}</span><div class="copy">${esc(c.text||c.raw)}</div>${mainPhotoHTML(pics)}<span class="pageNo">${n}</span></section>`
+  let visual=pics.length?mainPhotoHTML(pics):`<div class="noPhotoFeature"><div class="quote"><span class="mini">LillyTech Pet Stories</span>${esc(c.title||'Un recuerdo para guardar')}<br><span style="font-size:.58em;font-style:italic">Una página esperando esa foto que cuenta el comienzo de esta historia.</span></div></div>`; return `<section class="${cls}"><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="date">${fmt(c.date)}</div><span class="scribble">${c.cat==='Travesura'?'archivo oficial de travesuras ✦':c.cat==='Momento épico'?'esto merecía una página ✦':'un momento para guardar ✦'}</span><div class="copy">${esc(c.text||c.raw)}</div>${visual}<span class="pageNo">${n}</span></section>`
 }
 function photoPageHTML(c,pics,n,part,cls='sheet story photoPage'){
   let one=pics.length===1?' one':'';
