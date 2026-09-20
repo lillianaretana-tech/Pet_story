@@ -143,7 +143,7 @@ let p;try{p=JSON.parse(localStorage.getItem('petStoriesV2'))||seed}catch(e){p=se
 const $=x=>document.getElementById(x);const esc=s=>(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const fmt=d=>d?new Intl.DateTimeFormat('es-CR',{day:'numeric',month:'long',year:'numeric'}).format(new Date(d+'T12:00:00')):'';
 function files(fs){return Promise.all([...fs].map(f=>new Promise((ok,no)=>{let r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f)})))}
-function save(){try{localStorage.setItem('petStoriesV2',JSON.stringify(p));status.textContent='Guardado ✓'}catch(e){status.textContent='Fotos demasiado pesadas para almacenamiento local'}}
+function save(){try{localStorage.setItem('petStoriesV2',JSON.stringify(p));status.textContent=cloudUser?'Guardando en nube…':'Guardado temporal · iniciá sesión para nube'}catch(e){status.textContent='Guardando fotos en nube…'}}
 function coverHTML(cls='sheet cover'){return `<section class="${cls}"><div class="coverImg" style="background-image:url('${p.cover||''}')"></div><div class="shade"></div><div class="coverText"><div class="kicker">LillyTech Pet Stories · Su historia, a su manera</div><h1>${esc(p.name||'Mi mascota')}</h1><p>${esc(p.coverline||'Una historia que merece quedarse.')}</p></div></section>`}
 function mainPhotoHTML(pics){
   if(!pics.length)return '';
@@ -210,14 +210,104 @@ newBtn.onclick=()=>{if(confirm('¿Crear un libro nuevo?')){p={id:'p'+Date.now(),
 const SUPABASE_URL='https://vgkyoyosjewdygxtnqvu.supabase.co';
 const SUPABASE_KEY='sb_publishable_QOZiGlFdzOcCQtqDqI_I_A_ian2l-pf';
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let cloudUser=null, cloudTimer=null;
-async function cloudInit(){const {data}=await sb.auth.getUser();cloudUser=data.user||null;cloudUI();if(cloudUser)await loadCloud()}
-function cloudUI(){loginBtn.textContent=cloudUser?'Salir':'Entrar';cloudBadge.textContent=cloudUser?'☁ Conectado a Lilly_general':'☁ Supabase listo · iniciá sesión'}
-loginBtn.onclick=async()=>{if(cloudUser){await sb.auth.signOut();cloudUser=null;cloudUI();return}if(location.protocol==='file:'){alert('La aplicación ya funciona localmente. Para iniciar sesión y sincronizar con Supabase, publicala primero en GitHub Pages o abrila desde una dirección https://.');return}const email=prompt('Correo para entrar a Pet Stories:');if(!email)return;const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.href}});alert(error?'No pude enviar el acceso: '+error.message:'Te envié un enlace de acceso al correo. Abrilo para entrar.')}
-async function loadCloud(){const {data,error}=await sb.from('pet_books').select('*,pet_chapters(*)').order('updated_at',{ascending:false}).limit(1);if(error){cloudBadge.textContent='☁ Error al leer nube';return}if(!data?.length){await saveCloud();return}const b=data[0];p={id:b.id,name:b.pet_name,type:b.pet_type,sex:b.pet_sex,birth:b.birth_date||'',arrival:b.arrival_date||'',coverline:b.cover_line||'',cover:'',style:b.theme||'magazine',font:b.title_font||'Trebuchet MS',chapters:(b.pet_chapters||[]).sort((a,z)=>a.sort_order-z.sort_order).map(c=>({id:c.id,date:c.chapter_date||'',cat:c.category,title:c.title,raw:c.raw_text||'',text:c.final_text||'',photos:[]}))};localStorage.setItem('petStoriesV2',JSON.stringify(p));render();cloudBadge.textContent='☁ Cargado desde Supabase'}
-async function saveCloud(){if(!cloudUser)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(async()=>{let bookId=(p.id&&String(p.id).includes('-'))?p.id:null;const payload={owner_id:cloudUser.id,pet_name:p.name||'Nueva mascota',pet_type:p.type||'Perro',pet_sex:p.sex||'Sin especificar',birth_date:p.birth||null,arrival_date:p.arrival||null,cover_line:p.coverline||'',theme:p.style||'magazine',title_font:p.font||'Trebuchet MS',updated_at:new Date().toISOString()};let res=bookId?await sb.from('pet_books').update(payload).eq('id',bookId).select().single():await sb.from('pet_books').insert(payload).select().single();if(res.error){cloudBadge.textContent='☁ No se pudo guardar';return}p.id=res.data.id;bookId=p.id;await sb.from('pet_chapters').delete().eq('book_id',bookId);if(p.chapters.length){const rows=p.chapters.map((c,i)=>({book_id:bookId,chapter_date:c.date||null,category:c.cat||'Otro',title:c.title||'Sin título',raw_text:c.raw||'',final_text:c.text||'',sort_order:i,layout_style:'auto'}));const cr=await sb.from('pet_chapters').insert(rows);if(cr.error){cloudBadge.textContent='☁ Libro guardado · error capítulos';return}}localStorage.setItem('petStoriesV2',JSON.stringify(p));cloudBadge.textContent='☁ Guardado en Supabase ✓'},700)}
+const BUCKET='pet-stories';
+let cloudUser=null, cloudTimer=null, cloudSaving=false, cloudPending=false;
+
+function uuid(){return crypto.randomUUID()}
+function isUuid(v){return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v||'')}
+function dataUrlToBlob(dataUrl){let [head,data]=dataUrl.split(',');let mime=(head.match(/data:([^;]+)/)||[])[1]||'image/jpeg';let bin=atob(data),arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:mime})}
+function extFor(blob){return blob.type==='image/png'?'png':blob.type==='image/webp'?'webp':'jpg'}
+function pathFromSignedUrl(url){if(!url||url.startsWith('data:'))return null;let marker='/storage/v1/object/sign/'+BUCKET+'/';let i=url.indexOf(marker);if(i<0)return null;return decodeURIComponent(url.slice(i+marker.length).split('?')[0])}
+async function signed(path){if(!path)return '';const {data,error}=await sb.storage.from(BUCKET).createSignedUrl(path,60*60*24*30);if(error)throw error;return data.signedUrl}
+async function uploadDataUrl(dataUrl,pathBase){let blob=dataUrlToBlob(dataUrl),path=pathBase+'.'+extFor(blob);const {error}=await sb.storage.from(BUCKET).upload(path,blob,{contentType:blob.type,upsert:true});if(error)throw error;return path}
+
+async function cloudInit(){
+  const {data}=await sb.auth.getSession();
+  cloudUser=data.session?.user||null;cloudUI();
+  if(cloudUser)await loadCloud();
+}
+function cloudUI(){
+  loginBtn.textContent=cloudUser?'Salir':'Entrar';
+  cloudBadge.textContent=cloudUser?'☁ Lilly_general conectado':'☁ Iniciá sesión para guardar';
+}
+loginBtn.onclick=async()=>{
+  if(cloudUser){await sb.auth.signOut();cloudUser=null;cloudUI();return}
+  const email=prompt('Correo para entrar a Pet Stories:');if(!email)return;
+  const redirect=location.origin+location.pathname;
+  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:redirect}});
+  alert(error?'No pude enviar el acceso: '+error.message:'Te envié un enlace de acceso al correo. Abrilo para entrar.')
+};
+
+async function loadCloud(){
+  cloudBadge.textContent='☁ Leyendo Lilly_general…';
+  const {data,error}=await sb.from('pet_books').select('*,pet_chapters(*)').order('updated_at',{ascending:false}).limit(1);
+  if(error){cloudBadge.textContent='☁ Error al leer nube';console.error(error);return}
+  if(!data?.length){cloudBadge.textContent='☁ Nube vacía · listo para guardar';return}
+  const b=data[0], chapters=(b.pet_chapters||[]).sort((a,z)=>a.sort_order-z.sort_order);
+  const {data:media,error:me}=await sb.from('pet_media').select('*').eq('book_id',b.id).order('sort_order');
+  if(me){console.error(me)}
+  let cover='';
+  if(b.cover_path){try{cover=await signed(b.cover_path)}catch(e){console.error(e)}}
+  const byChapter={};
+  for(const m of (media||[])){if(!m.chapter_id)continue;(byChapter[m.chapter_id]??=[]).push(m)}
+  const hydrated=[];
+  for(const c of chapters){
+    let photos=[];
+    for(const m of (byChapter[c.id]||[])){try{photos.push(await signed(m.storage_path))}catch(e){console.error(e)}}
+    hydrated.push({id:c.id,date:c.chapter_date||'',cat:c.category,title:c.title,raw:c.raw_text||'',text:c.final_text||'',photos})
+  }
+  p={id:b.id,name:b.pet_name,type:b.pet_type,sex:b.pet_sex,birth:b.birth_date||'',arrival:b.arrival_date||'',coverline:b.cover_line||'',cover,style:b.theme||'magazine',font:b.title_font||'Trebuchet MS',chapters:hydrated};
+  try{localStorage.setItem('petStoriesV2',JSON.stringify(p))}catch(e){}
+  render();status.textContent='Guardado en Supabase ✓';cloudBadge.textContent='☁ Cargado desde Lilly_general ✓';
+}
+
+async function doSaveCloud(){
+  if(!cloudUser)return;
+  if(cloudSaving){cloudPending=true;return}
+  cloudSaving=true;cloudPending=false;
+  try{
+    cloudBadge.textContent='☁ Guardando…';
+    let bookId=isUuid(p.id)?p.id:uuid(); p.id=bookId;
+    for(const c of p.chapters){if(!isUuid(c.id))c.id=uuid()}
+    let coverPath=pathFromSignedUrl(p.cover);
+    if(p.cover?.startsWith('data:')){
+      coverPath=await uploadDataUrl(p.cover,cloudUser.id+'/'+bookId+'/cover/'+uuid());
+      p.cover=await signed(coverPath);
+    }
+    const payload={id:bookId,owner_id:cloudUser.id,pet_name:p.name||'Nueva mascota',pet_type:p.type||'Perro',pet_sex:p.sex||'Sin especificar',birth_date:p.birth||null,arrival_date:p.arrival||null,cover_line:p.coverline||'',cover_path:coverPath,theme:p.style||'magazine',title_font:p.font||'Trebuchet MS',updated_at:new Date().toISOString()};
+    const br=await sb.from('pet_books').upsert(payload).select().single();if(br.error)throw br.error;
+
+    const chapterRows=p.chapters.map((c,i)=>({id:c.id,book_id:bookId,chapter_date:c.date||null,category:c.cat||'Otro',title:c.title||'Sin título',raw_text:c.raw||'',final_text:c.text||'',sort_order:i,layout_style:'auto',updated_at:new Date().toISOString()}));
+    if(chapterRows.length){const cr=await sb.from('pet_chapters').upsert(chapterRows);if(cr.error)throw cr.error}
+    const keep=p.chapters.map(c=>c.id);
+    let dq=sb.from('pet_chapters').delete().eq('book_id',bookId);if(keep.length)dq=dq.not('id','in','('+keep.join(',')+')');const dr=await dq;if(dr.error)throw dr.error;
+
+    const mediaRows=[];
+    for(const c of p.chapters){
+      for(let i=0;i<(c.photos||[]).length;i++){
+        let src=c.photos[i],path=pathFromSignedUrl(src);
+        if(src?.startsWith('data:')){
+          path=await uploadDataUrl(src,cloudUser.id+'/'+bookId+'/chapters/'+c.id+'/'+uuid());
+          c.photos[i]=await signed(path);
+        }
+        if(path)mediaRows.push({book_id:bookId,chapter_id:c.id,storage_path:path,sort_order:i,caption:''});
+      }
+    }
+    const md=await sb.from('pet_media').delete().eq('book_id',bookId);if(md.error)throw md.error;
+    if(mediaRows.length){const mi=await sb.from('pet_media').insert(mediaRows);if(mi.error)throw mi.error}
+    try{localStorage.setItem('petStoriesV2',JSON.stringify(p))}catch(e){}
+    render();status.textContent='Guardado en Supabase ✓';cloudBadge.textContent='☁ Guardado en Lilly_general ✓';
+  }catch(e){
+    console.error(e);status.textContent='Error al guardar en nube';cloudBadge.textContent='☁ Error de guardado';
+  }finally{
+    cloudSaving=false;
+    if(cloudPending){cloudPending=false;doSaveCloud()}
+  }
+}
+function saveCloud(){if(!cloudUser)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(doSaveCloud,900)}
 const originalSave=save;save=function(){originalSave();saveCloud()}
-sb.auth.onAuthStateChange((_event,session)=>{cloudUser=session?.user||null;cloudUI()});cloudInit();
+sb.auth.onAuthStateChange((_event,session)=>{const was=cloudUser;cloudUser=session?.user||null;cloudUI();if(cloudUser&&!was)setTimeout(loadCloud,0)});
+cloudInit();
 
 render();
 </script>
