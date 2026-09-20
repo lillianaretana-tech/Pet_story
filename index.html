@@ -19,17 +19,79 @@ input,select,textarea{width:100%;padding:10px;border:1px solid #cdd2d4;border-ra
 .stagebar{max-width:900px;margin:0 auto 10px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#697780}
 .book{max-width:900px;margin:auto;background:var(--paper);box-shadow:0 18px 55px #17324725}.spread{display:grid;grid-template-columns:1fr 1fr;min-height:600px}.sheet{min-height:600px;padding:48px 42px;position:relative;overflow:hidden;border-right:1px solid #eee7dd;background:var(--paper)}.sheet:last-child{border-right:0}
 .cover{padding:0;background:var(--navy);color:white}.coverImg{position:absolute;inset:0;background-size:cover;background-position:center}.shade{position:absolute;inset:0;background:linear-gradient(0deg,#0b263ce8 0%,transparent 72%)}.coverText{position:absolute;left:8%;right:8%;bottom:8%;z-index:2}.kicker{font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:900;color:#f3cb7d}.cover h1{font-family:"Trebuchet MS",Arial,sans-serif;font-size:70px;line-height:.9;margin:10px 0}.cover p{font-family:Georgia,serif;font-size:18px;line-height:1.5}
-.story .tag{display:inline-block;background:var(--mustard);padding:6px 10px;border-radius:999px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;transform:rotate(-2deg)}.story h2{font-family:"Trebuchet MS",Arial,sans-serif;color:var(--navy);font-size:43px;line-height:1;margin:14px 0 7px}.date{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--coral)}.copy{font-family:Georgia,serif;font-size:16px;line-height:1.68;white-space:pre-wrap}.photoHero{width:100%;height:255px;object-fit:cover;margin-top:15px;border-radius:2px}.collage{display:grid;grid-template-columns:1.2fr .8fr;gap:8px;margin-top:15px}.collage img{width:100%;height:210px;object-fit:cover}.scribble{font-family:"Trebuchet MS",sans-serif;color:var(--coral);font-weight:800;font-size:15px;transform:rotate(-2deg);display:inline-block;margin:8px 0}.pageNo{position:absolute;bottom:17px;right:22px;color:#a29b91;font-size:10px}
+.story .tag{display:inline-block;background:var(--mustard);padding:6px 10px;border-radius:999px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;transform:rotate(-2deg)}.story h2{font-family:"Trebuchet MS",Arial,sans-serif;color:var(--navy);font-size:43px;line-height:1;margin:14px 0 7px}.date{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--coral)}.copy{font-family:Georgia,serif;font-size:16px;line-height:1.68;white-space:pre-wrap}.photoHero{width:100%;height:255px;object-fit:cover;margin-top:15px;border-radius:2px}.collage{display:grid;grid-template-columns:1.2fr .8fr;gap:8px;margin-top:15px}.collage img{width:100%;height:210px;object-fit:cover}
+.gallery3,.gallery4{display:grid;gap:8px;margin-top:15px}
+.gallery3{grid-template-columns:1.15fr .85fr;grid-template-rows:150px 150px}
+.gallery3 img{width:100%;height:100%;object-fit:cover}.gallery3 img:first-child{grid-row:1/3}
+.gallery4{grid-template-columns:1fr 1fr;grid-template-rows:145px 145px}.gallery4 img{width:100%;height:100%;object-fit:cover}
+.photoPage h2{font-family:"Trebuchet MS",Arial,sans-serif;color:var(--navy);font-size:36px;line-height:1;margin:8px 0}
+.photoPage .photoOnlyGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.photoPage .photoOnlyGrid.one{grid-template-columns:1fr}.photoPage .photoOnlyGrid img{width:100%;height:245px;object-fit:cover}
+.photoPage .photoOnlyGrid.one img{height:510px}.photoPage .continuation{font-family:Georgia,serif;color:#7b6f65;font-size:14px;font-style:italic}.scribble{font-family:"Trebuchet MS",sans-serif;color:var(--coral);font-weight:800;font-size:15px;transform:rotate(-2deg);display:inline-block;margin:8px 0}.pageNo{position:absolute;bottom:17px;right:22px;color:#a29b91;font-size:10px}
 .nav{max-width:900px;margin:10px auto;display:flex;justify-content:space-between;align-items:center}.nav button{border:0;background:var(--navy);color:white;border-radius:999px;padding:8px 13px}.nav button:disabled{opacity:.3}
 .fullbook{display:none;max-width:900px;margin:auto}.fullbook.active{display:block}.fullbook .printPage{background:var(--paper);min-height:600px;padding:48px 42px;position:relative;margin:0 0 14px;box-shadow:0 8px 28px #17324718}.fullbook .printPage.coverPrint{padding:0;min-height:600px;background:var(--navy);color:white;overflow:hidden}
 .modeButtons{display:flex;gap:7px}.modeButtons .btn.active{background:var(--coral);color:white}
 dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));box-shadow:0 25px 80px #0006}dialog::backdrop{background:#0a2032bd}.modal{padding:24px}.modalActions{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}.toneBtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.tone{border:1px solid #ccd3d6;border-radius:999px;background:white;padding:7px 10px;font-size:11px;font-weight:800}.tone.sel{background:var(--navy);color:white}
 @media(max-width:850px){.app{grid-template-columns:1fr}aside{border-right:0}.spread{grid-template-columns:1fr}.spread .sheet:nth-child(2){display:none}.sheet{min-height:570px;padding:38px 25px}.book{max-width:560px}.cover h1{font-size:58px}}
 @media print{
- header,aside,.stagebar,.nav,.modeButtons{display:none!important} body,main,.app{display:block!important;background:white!important;padding:0!important;margin:0!important}.book{display:none!important}.fullbook{display:block!important;max-width:none!important;margin:0!important}
- .fullbook .printPage{box-shadow:none!important;margin:0!important;width:100%!important;min-height:0!important;height:100vh!important;page-break-after:always;break-after:page;overflow:hidden}
  @page{size:A4 portrait;margin:0}
+ html,body{width:210mm!important;margin:0!important;padding:0!important;background:#fff!important}
+ *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+ header,aside,.stagebar,.nav,.modeButtons,dialog{display:none!important}
+ body,main,.app{display:block!important;padding:0!important;margin:0!important;background:#fff!important}
+ main{width:210mm!important}
+ .book{display:none!important}
+ .fullbook{display:block!important;width:210mm!important;max-width:210mm!important;margin:0!important;padding:0!important}
+ .fullbook .printPage{
+   box-sizing:border-box!important;
+   width:210mm!important;
+   height:297mm!important;
+   min-height:297mm!important;
+   max-height:297mm!important;
+   margin:0!important;
+   padding:18mm 16mm 15mm!important;
+   box-shadow:none!important;
+   overflow:hidden!important;
+   break-after:page!important;
+   page-break-after:always!important;
+   position:relative!important;
+ }
+ .fullbook .printPage:last-child{break-after:auto!important;page-break-after:auto!important}
+ .fullbook .coverPrint{
+   padding:0!important;
+   width:210mm!important;
+   height:297mm!important;
+   min-height:297mm!important;
+ }
+ .coverPrint .coverImg{position:absolute!important;inset:0!important;width:210mm!important;height:297mm!important;background-size:cover!important;background-position:center!important}
+ .coverPrint .shade{position:absolute!important;inset:0!important}
+ .coverPrint .coverText{position:absolute!important;left:16mm!important;right:16mm!important;bottom:22mm!important}
+ .coverPrint h1{font-size:25mm!important;line-height:.88!important;margin:3mm 0!important}
+ .coverPrint p{font-size:5.2mm!important;line-height:1.38!important;max-width:155mm!important}
+ .printPage.story{display:flex!important;flex-direction:column!important}
+ .printPage.story h2{font-size:13mm!important;line-height:.96!important;margin:4mm 0 2mm!important}
+ .printPage.story .date{font-size:3mm!important}
+ .printPage.story .tag{font-size:2.6mm!important;padding:1.8mm 3mm!important}
+ .printPage.story .scribble{font-size:4mm!important;margin:2mm 0!important}
+ .printPage.story .copy{font-size:4.2mm!important;line-height:1.55!important;margin-bottom:3mm!important}
+ .printPage.story .photoHero{width:100%!important;height:128mm!important;object-fit:cover!important;margin-top:4mm!important}
+ .printPage.story .collage{display:grid!important;grid-template-columns:1fr 1fr!important;gap:3mm!important;margin-top:4mm!important}
+ .printPage.story .collage img{width:100%!important;height:108mm!important;object-fit:cover!important}
+ .printPage.story .gallery3{display:grid!important;grid-template-columns:1.15fr .85fr!important;grid-template-rows:54mm 54mm!important;gap:3mm!important;margin-top:4mm!important}
+ .printPage.story .gallery3 img{width:100%!important;height:100%!important;object-fit:cover!important}.printPage.story .gallery3 img:first-child{grid-row:1/3!important}
+ .printPage.story .gallery4{display:grid!important;grid-template-columns:1fr 1fr!important;grid-template-rows:52mm 52mm!important;gap:3mm!important;margin-top:4mm!important}
+ .printPage.story .gallery4 img{width:100%!important;height:100%!important;object-fit:cover!important}
+ .printPage.photoPage .photoOnlyGrid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:3mm!important;margin-top:5mm!important}
+ .printPage.photoPage .photoOnlyGrid img{width:100%!important;height:105mm!important;object-fit:cover!important}
+ .printPage.photoPage .photoOnlyGrid.one{grid-template-columns:1fr!important}.printPage.photoPage .photoOnlyGrid.one img{height:215mm!important}
+ .printPage.photoPage .continuation{font-size:4mm!important;margin-top:2mm!important}
+ .printPage.story .pageNo{bottom:8mm!important;right:12mm!important;font-size:3mm!important}
 }
+
+.photoManager{margin-top:9px;padding:10px;border:1px solid #d9dee0;border-radius:12px;background:#fff}
+.photoManager:empty{display:none}.photoItem{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:center;margin:7px 0;padding:7px;border-radius:10px;background:#f5f3ee}
+.photoItem img{width:72px;height:62px;object-fit:cover;border-radius:8px}.photoBtns{display:flex;gap:5px;flex-wrap:wrap}.photoBtns button{font-size:10px;padding:6px 8px}
+.coverTools{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}.coverThumb{width:100%;height:115px;object-fit:cover;border-radius:10px;margin-top:8px}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body>
 <header><div class="brand"><small>LillyTech</small>Pet Stories Studio V2</div><div class="actions"><span id="cloudBadge" style="font-size:11px;align-self:center;color:#f3cb7d">☁ Supabase listo</span><button class="btn ghost" id="loginBtn">Entrar</button><button class="btn ghost" id="newBtn">Nuevo</button><button class="btn ghost" id="dupBtn">Duplicar</button><button class="btn gold" id="printBtn">Exportar / PDF</button></div></header>
@@ -38,7 +100,9 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
 <section class="panel active" id="pet"><h3>La estrella del libro</h3>
 <label>Nombre</label><input id="name"><div class="row"><div><label>Tipo</label><select id="type"><option>Perro</option><option>Gato</option><option>Otro</option></select></div><div><label>Sexo</label><select id="sex"><option>Macho</option><option>Hembra</option><option>Sin especificar</option></select></div></div>
 <div class="row"><div><label>Nació</label><input id="birth" type="date"></div><div><label>Llegó a la familia</label><input id="arrival" type="date"></div></div>
-<label>Frase de portada</label><textarea id="coverline"></textarea><label class="upload">📷 Foto principal<input id="coverfile" type="file" accept="image/*"></label><p class="note">Si no conocemos su nacimiento, el libro puede comenzar con “El día que llegaste”.</p></section>
+<label>Frase de portada</label><textarea id="coverline"></textarea><label class="upload" id="coverUploadLabel">📷 Elegir foto principal<input id="coverfile" type="file" accept="image/*"></label>
+<div id="coverManager" class="photoManager"></div>
+<p class="note">Si no conocemos su nacimiento, el libro puede comenzar con “El día que llegaste”.</p></section>
 <section class="panel" id="look"><h3>Que se sienta suyo</h3><div class="styleGrid">
 <button class="style sel" data-style="magazine"><b>Revista</b><small>Fotográfica y alegre</small></button><button class="style" data-style="warm"><b>Cálida</b><small>Íntima y suave</small></button><button class="style" data-style="bold"><b>Con carácter</b><small>Títulos grandes</small></button><button class="style" data-style="clean"><b>Minimal</b><small>Más aire y fotografía</small></button></div>
 <label>Letra de títulos</label><select id="font"><option value="Trebuchet MS">Redondeada editorial</option><option value="Georgia">Clásica</option><option value="Arial">Moderna</option><option value="Palatino Linotype">Libro</option></select>
@@ -59,6 +123,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
 <button type="button" class="btn gold" id="shape" style="margin-top:9px">✨ Darle forma</button>
 <label>Texto final editable</label><textarea id="finaltext" placeholder="Podés escribirlo vos o usar “Darle forma”."></textarea>
 <label class="upload">📷 Agregar fotos<input id="photos" type="file" accept="image/*" multiple></label>
+<div id="photoManager" class="photoManager"></div>
 <div class="modalActions"><button type="button" class="btn" id="cancel">Cancelar</button><button class="btn gold">Guardar capítulo</button></div></form></dialog>
 
 <script>
@@ -66,16 +131,57 @@ const seed={id:'bruno',name:'Bruno',type:'Perro',sex:'Macho',birth:'2026-01-29',
 {id:'a',date:'2026-01-29',cat:'Crecimiento',title:'Aquí comienza todo',raw:'Nació Bruno. Nosotros todavía no lo conocíamos.',text:'Bruno nació el 29 de enero de 2026. Nosotros todavía no lo conocíamos, así que esta primera página queda reservada para aquella foto pequeñita que marca el verdadero comienzo de nuestra historia juntos.',photos:[]},
 {id:'b',date:'2026-09-20',cat:'Momento épico',title:'El león sobrevivió',raw:'Castraron a Bruno y volvió con el cono. El león quedó vivo.',text:'Bruno volvió a casa con un cono enorme y una expresión que decía que nadie había consultado con él. Mientras tanto, su viejo adversario observaba desde el piso. Contra todo pronóstico, el león salió vivo de la lucha.',photos:[]}
 ]};
-let p;try{p=JSON.parse(localStorage.getItem('petStoriesV2'))||seed}catch(e){p=seed} let idx=0,tone='natural';
+let p;try{p=JSON.parse(localStorage.getItem('petStoriesV2'))||seed}catch(e){p=seed} let idx=0,tone='natural',editingPhotos=[];
 const $=x=>document.getElementById(x);const esc=s=>(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const fmt=d=>d?new Intl.DateTimeFormat('es-CR',{day:'numeric',month:'long',year:'numeric'}).format(new Date(d+'T12:00:00')):'';
 function files(fs){return Promise.all([...fs].map(f=>new Promise((ok,no)=>{let r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f)})))}
 function save(){try{localStorage.setItem('petStoriesV2',JSON.stringify(p));status.textContent='Guardado ✓'}catch(e){status.textContent='Fotos demasiado pesadas para almacenamiento local'}}
 function coverHTML(cls='sheet cover'){return `<section class="${cls}"><div class="coverImg" style="background-image:url('${p.cover||''}')"></div><div class="shade"></div><div class="coverText"><div class="kicker">LillyTech Pet Stories · Su historia, a su manera</div><h1>${esc(p.name||'Mi mascota')}</h1><p>${esc(p.coverline||'Una historia que merece quedarse.')}</p></div></section>`}
-function storyHTML(c,n,cls='sheet story'){let pics=(c.photos||[]);let pic=pics.length===1?`<img class="photoHero" src="${pics[0]}">`:pics.length>1?`<div class="collage"><img src="${pics[0]}"><img src="${pics[1]}"></div>`:'';return `<section class="${cls}"><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="date">${fmt(c.date)}</div><div class="scribble">${c.cat==='Travesura'?'archivo oficial de travesuras ✦':c.cat==='Momento épico'?'esto merecía una página ✦':'un momento para guardar ✦'}</div><div class="copy">${esc(c.text)}</div>${pic}<div class="pageNo">${n}</div></section>`}
-function pages(){return [{kind:'cover'},...p.chapters.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(c=>({kind:'story',c}))]}
-function render(){book.style.setProperty('--titleFont',`"${p.font}"`);let ps=pages();idx=Math.min(idx,Math.max(0,Math.ceil(ps.length/2)-1));let start=idx*2, pair=ps.slice(start,start+2);spread.innerHTML=pair.map((x,i)=>x.kind==='cover'?coverHTML():storyHTML(x.c,start+i+1)).join('');if(pair.length===1)spread.insertAdjacentHTML('beforeend','<section class="sheet"></section>');count.textContent=`Páginas ${start+1}–${Math.min(start+2,ps.length)} de ${ps.length}`;prev.disabled=idx===0;next.disabled=start+2>=ps.length;
-fullbook.innerHTML=ps.map((x,i)=>x.kind==='cover'?coverHTML('printPage coverPrint'):storyHTML(x.c,i+1,'printPage story')).join('');renderList();sync()}
+function mainPhotoHTML(pics){
+  if(!pics.length)return '';
+  if(pics.length===1)return `<img class="photoHero" src="${pics[0]}">`;
+  if(pics.length===2)return `<div class="collage"><img src="${pics[0]}"><img src="${pics[1]}"></div>`;
+  if(pics.length===3)return `<div class="gallery3">${pics.map(x=>`<img src="${x}">`).join('')}</div>`;
+  return `<div class="gallery4">${pics.slice(0,4).map(x=>`<img src="${x}">`).join('')}</div>`;
+}
+function storyHTML(c,n,cls='sheet story'){
+  let pics=(c.photos||[]).slice(0,4);
+  return `<section class="${cls}"><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="date">${fmt(c.date)}</div><span class="scribble">${c.cat==='Travesura'?'archivo oficial de travesuras ✦':c.cat==='Momento épico'?'esto merecía una página ✦':'un momento para guardar ✦'}</span><div class="copy">${esc(c.text||c.raw)}</div>${mainPhotoHTML(pics)}<span class="pageNo">${n}</span></section>`
+}
+function photoPageHTML(c,pics,n,part,cls='sheet story photoPage'){
+  let one=pics.length===1?' one':'';
+  return `<section class="${cls}"><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="continuation">Más fotos de este recuerdo · ${part}</div><div class="photoOnlyGrid${one}">${pics.map(x=>`<img src="${x}">`).join('')}</div><span class="pageNo">${n}</span></section>`
+}
+function pages(){
+  let out=[{kind:'cover'}];
+  p.chapters.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')).forEach(c=>{
+    out.push({kind:'story',c});
+    let rest=(c.photos||[]).slice(4), part=2;
+    while(rest.length){out.push({kind:'photos',c,photos:rest.splice(0,4),part:part++})}
+  });
+  return out;
+}
+function pageHTML(x,n,cls){
+  if(x.kind==='cover')return coverHTML(cls||'sheet cover');
+  if(x.kind==='story')return storyHTML(x.c,n,cls||'sheet story');
+  return photoPageHTML(x.c,x.photos,n,x.part,cls||'sheet story photoPage');
+}
+function renderCoverManager(){
+  if(!p.cover){coverManager.innerHTML='';coverUploadLabel.firstChild.textContent='📷 Elegir foto principal';return}
+  coverUploadLabel.firstChild.textContent='📷 Reemplazar foto principal';
+  coverManager.innerHTML=`<img class="coverThumb" src="${p.cover}"><div class="coverTools"><button type="button" class="btn" id="replaceCover">🔄 Reemplazar</button><button type="button" class="btn" id="deleteCover">🗑 Eliminar</button></div>`;
+  $('replaceCover').onclick=()=>coverfile.click();
+  $('deleteCover').onclick=()=>{if(confirm('¿Eliminar la foto principal?')){p.cover='';coverfile.value='';save();render()}};
+}
+function renderPhotoManager(){
+  if(!editingPhotos.length){photoManager.innerHTML='';return}
+  photoManager.innerHTML=editingPhotos.map((src,i)=>`<div class="photoItem"><img src="${src}"><div><b>Foto ${i+1}</b><div class="photoBtns"><button type="button" class="btn" onclick="replaceChapterPhoto(${i})">🔄 Cambiar</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},-1)" ${i===0?'disabled':''}>←</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},1)" ${i===editingPhotos.length-1?'disabled':''}>→</button><button type="button" class="btn" onclick="deleteChapterPhoto(${i})">🗑 Eliminar</button></div></div></div>`).join('');
+}
+window.deleteChapterPhoto=i=>{editingPhotos.splice(i,1);renderPhotoManager()};
+window.moveChapterPhoto=(i,d)=>{let j=i+d;if(j<0||j>=editingPhotos.length)return;[editingPhotos[i],editingPhotos[j]]=[editingPhotos[j],editingPhotos[i]];renderPhotoManager()};
+window.replaceChapterPhoto=i=>{let inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=async()=>{if(inp.files[0]){editingPhotos[i]=(await files(inp.files))[0];renderPhotoManager()}};inp.click()};
+function render(){book.style.setProperty('--titleFont',`"${p.font}"`);let ps=pages();idx=Math.min(idx,Math.max(0,Math.ceil(ps.length/2)-1));let start=idx*2, pair=ps.slice(start,start+2);spread.innerHTML=pair.map((x,i)=>pageHTML(x,start+i+1)).join('');if(pair.length===1)spread.insertAdjacentHTML('beforeend','<section class="sheet"></section>');count.textContent=`Páginas ${start+1}–${Math.min(start+2,ps.length)} de ${ps.length}`;prev.disabled=idx===0;next.disabled=start+2>=ps.length;
+fullbook.innerHTML=ps.map((x,i)=>pageHTML(x,i+1,x.kind==='cover'?'printPage coverPrint':x.kind==='photos'?'printPage story photoPage':'printPage story')).join('');renderList();sync();renderCoverManager()}
 function renderList(){chapterList.innerHTML='';p.chapters.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(c=>{let d=document.createElement('div');d.className='chapter';d.innerHTML=`<div><b>${esc(c.title)}</b><small>${fmt(c.date)} · ${esc(c.cat)}</small></div><div><button class="btn" onclick="editC('${c.id}')">Editar</button><button class="btn" onclick="delC('${c.id}')">×</button></div>`;chapterList.appendChild(d)})}
 function sync(){name.value=p.name||'';type.value=p.type||'Perro';sex.value=p.sex||'Macho';birth.value=p.birth||'';arrival.value=p.arrival||'';coverline.value=p.coverline||'';font.value=p.font||'Trebuchet MS';document.querySelectorAll('.style').forEach(x=>x.classList.toggle('sel',x.dataset.style===p.style))}
 ['name','type','sex','birth','arrival','coverline','font'].forEach(id=>$(id).addEventListener(id==='name'||id==='coverline'?'input':'change',()=>{p[id]= $(id).value;save();render()}));
@@ -85,12 +191,12 @@ document.querySelectorAll('.style').forEach(x=>x.onclick=()=>{p.style=x.dataset.
 prev.onclick=()=>{idx--;render()};next.onclick=()=>{idx++;render()};
 spreadMode.onclick=()=>{book.style.display='block';fullbook.classList.remove('active');nav.style.display='flex';spreadMode.classList.add('active');fullMode.classList.remove('active')};
 fullMode.onclick=()=>{book.style.display='none';fullbook.classList.add('active');nav.style.display='none';fullMode.classList.add('active');spreadMode.classList.remove('active')};
-printBtn.onclick=()=>{fullMode.click();setTimeout(()=>window.print(),80)};
-function open(c){form.reset();cid.value=c?.id||'';dlgTitle.textContent=c?'Editar recuerdo':'Nuevo recuerdo';tone='natural';document.querySelectorAll('.tone').forEach(x=>x.classList.toggle('sel',x.dataset.tone==='natural'));if(c){date.value=c.date;cat.value=c.cat;title.value=c.title;raw.value=c.raw||c.text;finaltext.value=c.text}dlg.showModal()}
-add.onclick=()=>open();cancel.onclick=()=>dlg.close();window.editC=id=>open(p.chapters.find(x=>x.id===id));window.delC=id=>{if(confirm('¿Eliminar este recuerdo?')){p.chapters=p.chapters.filter(x=>x.id!==id);save();render()}};
+printBtn.onclick=()=>{fullMode.click();setTimeout(()=>window.print(),120)};
+function open(c){form.reset();cid.value=c?.id||'';dlgTitle.textContent=c?'Editar recuerdo':'Nuevo recuerdo';tone='natural';editingPhotos=[...(c?.photos||[])];document.querySelectorAll('.tone').forEach(x=>x.classList.toggle('sel',x.dataset.tone==='natural'));if(c){date.value=c.date;cat.value=c.cat;title.value=c.title;raw.value=c.raw||c.text;finaltext.value=c.text}renderPhotoManager();dlg.showModal()}
+add.onclick=()=>open();cancel.onclick=()=>dlg.close();photos.onchange=async()=>{if(photos.files.length){editingPhotos.push(...await files(photos.files));photos.value='';renderPhotoManager()}};window.editC=id=>open(p.chapters.find(x=>x.id===id));window.delC=id=>{if(confirm('¿Eliminar este recuerdo?')){p.chapters=p.chapters.filter(x=>x.id!==id);save();render()}};
 document.querySelectorAll('.tone').forEach(x=>x.onclick=()=>{tone=x.dataset.tone;document.querySelectorAll('.tone').forEach(y=>y.classList.toggle('sel',y===x))});
 shape.onclick=()=>{let s=raw.value.trim();if(!s){finaltext.value='';return}let name=p.name||'Tu mascota';if(tone==='fun')finaltext.value=`${name} tenía una misión muy clara ese día: ${s.charAt(0).toLowerCase()+s.slice(1)}. Y, como suele pasar con las mejores historias de cuatro patas, el plan terminó siendo bastante más memorable de lo esperado.`;else if(tone==='sweet')finaltext.value=`Hay momentos pequeños que terminan quedándose para siempre. ${s} Es uno de esos recuerdos que, con el tiempo, se vuelven parte de la historia de ${name} y de su familia.`;else finaltext.value=`${s} Ese momento quedó guardado como una de esas escenas sencillas que cuentan, mejor que cualquier presentación, quién es ${name}.`;};
-form.onsubmit=async e=>{e.preventDefault();let id=cid.value||'c'+Date.now(),old=p.chapters.find(x=>x.id===id),pics=await files(photos.files),o={id,date:date.value,cat:cat.value,title:title.value,raw:raw.value,text:finaltext.value||raw.value,photos:[...(old?.photos||[]),...pics]};p.chapters=old?p.chapters.map(x=>x.id===id?o:x):[...p.chapters,o];save();dlg.close();render()};
+form.onsubmit=async e=>{e.preventDefault();let id=cid.value||'c'+Date.now(),old=p.chapters.find(x=>x.id===id),o={id,date:date.value,cat:cat.value,title:title.value,raw:raw.value,text:finaltext.value||raw.value,photos:[...editingPhotos]};p.chapters=old?p.chapters.map(x=>x.id===id?o:x):[...p.chapters,o];save();dlg.close();render()};
 dupBtn.onclick=()=>{p={...p,id:'copy'+Date.now(),name:p.name+' copia',chapters:p.chapters.map((c,i)=>({...c,id:'x'+Date.now()+i}))};save();render();alert('Libro duplicado. Ya podés personalizarlo.')};
 newBtn.onclick=()=>{if(confirm('¿Crear un libro nuevo?')){p={id:'p'+Date.now(),name:'Nueva mascota',type:'Perro',sex:'Macho',birth:'',arrival:'',coverline:'Una historia que merece quedarse.',cover:'',style:'magazine',font:'Trebuchet MS',chapters:[]};save();idx=0;render()}};
 const SUPABASE_URL='https://vgkyoyosjewdygxtnqvu.supabase.co';
