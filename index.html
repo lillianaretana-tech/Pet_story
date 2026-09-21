@@ -93,10 +93,18 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
 .photoItem img{width:72px;height:62px;object-fit:cover;border-radius:8px}.photoItem{cursor:grab}.photoItem.dragging{opacity:.45;outline:2px dashed var(--coral)}.photoItem.dragover{outline:2px solid var(--mustard)}.dragHint{font-size:10px;color:var(--muted);margin:5px 0 2px}.photoBtns{display:flex;gap:5px;flex-wrap:wrap}.photoBtns button{font-size:10px;padding:6px 8px}
 .coverTools{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}.coverThumb{width:100%;height:115px;object-fit:cover;border-radius:10px;margin-top:8px}
 
-/* V4.1 · fondo editorial suave */
-.sheet.story,.printPage.story{background:radial-gradient(ellipse at 8% 10%,rgba(158,199,216,.16) 0 7%,transparent 18%),radial-gradient(ellipse at 92% 88%,rgba(229,183,95,.13) 0 8%,transparent 20%),radial-gradient(ellipse at 88% 12%,rgba(223,125,104,.10) 0 5%,transparent 15%),var(--paper)}
-.sheet.story:before,.printPage.story:before{content:"";position:absolute;right:18px;top:18px;width:82px;height:82px;opacity:.055;pointer-events:none;background-repeat:no-repeat;background-position:center;background-size:contain;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23102d47'%3E%3Cellipse cx='50' cy='62' rx='24' ry='20'/%3E%3Cellipse cx='25' cy='39' rx='10' ry='14'/%3E%3Cellipse cx='43' cy='27' rx='9' ry='14'/%3E%3Cellipse cx='61' cy='27' rx='9' ry='14'/%3E%3Cellipse cx='78' cy='40' rx='10' ry='14'/%3E%3C/g%3E%3C/svg%3E")}
-.adjustBox{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.adjustBox button{font-size:10px;padding:5px 7px}.adjustBtn{background:#eef5f8!important}
+/* V4.2: printable decoration + large crop editor */
+.pageDecor{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.pageDecor svg{width:100%;height:100%;display:block}
+.sheet.story>*:not(.pageDecor),.printPage.story>*:not(.pageDecor){position:relative;z-index:1}
+#cropDlg{width:min(920px,94vw);max-width:920px}
+.cropModal{padding:22px}.cropLayout{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:20px}
+.cropStage{height:min(68vh,620px);min-height:430px;background:#e7ebed;border-radius:14px;overflow:hidden;position:relative;touch-action:none;cursor:grab;border:1px solid #ccd4d8}
+.cropStage:active{cursor:grabbing}.cropStage img{width:100%;height:100%;object-fit:cover;user-select:none;pointer-events:none}
+.cropGrid{position:absolute;inset:0;background:linear-gradient(to right,transparent 33.1%,#fff8 33.3%,#fff8 33.7%,transparent 33.9%,transparent 66.1%,#fff8 66.3%,#fff8 66.7%,transparent 66.9%),linear-gradient(to bottom,transparent 33.1%,#fff8 33.3%,#fff8 33.7%,transparent 33.9%,transparent 66.1%,#fff8 66.3%,#fff8 66.7%,transparent 66.9%);pointer-events:none}
+.cropControls{display:flex;flex-direction:column;gap:10px}.cropControls .btn{border:1px solid #d2d8db}.cropReadout{font-size:12px;color:var(--muted);line-height:1.5}.cropArrows{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.cropArrows button{padding:10px}
+@media(max-width:700px){.cropLayout{grid-template-columns:1fr}.cropStage{min-height:330px;height:52vh}.cropControls{display:grid;grid-template-columns:1fr 1fr}}
+@media print{.pageDecor{display:block!important;position:absolute!important;inset:0!important;z-index:0!important}.pageDecor svg{display:block!important;width:100%!important;height:100%!important}.printPage.story>*:not(.pageDecor){position:relative!important;z-index:1!important}}
 </style></head>
 <body>
 <header><div class="brand"><small>LillyTech</small>Pet Stories Studio V2</div><div class="actions"><span style="font-size:11px;align-self:center;color:#f3cb7d">💾 V4 recuperado · modo local seguro</span><button class="btn ghost" id="newBtn">Nuevo</button><button class="btn ghost" id="dupBtn">Duplicar</button><button class="btn gold" id="printBtn">Exportar / PDF</button></div></header>
@@ -138,6 +146,15 @@ const $=x=>document.getElementById(x);const esc=s=>(s||'').replace(/[&<>"']/g,c=
 const fmt=d=>d?new Intl.DateTimeFormat('es-CR',{day:'numeric',month:'long',year:'numeric'}).format(new Date(d+'T12:00:00')):'';
 function files(fs){return Promise.all([...fs].map(f=>new Promise((ok,no)=>{let r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f)})))}
 function save(){try{localStorage.setItem('petStoriesV4Recovered',JSON.stringify(p));status.textContent='Guardado ✓'}catch(e){status.textContent='Fotos demasiado pesadas para almacenamiento local'}}
+function decorHTML(){
+ return `<div class="pageDecor" aria-hidden="true"><svg viewBox="0 0 1000 1400" preserveAspectRatio="none">
+ <path d="M0 0H280C220 80 300 145 210 215C120 285 95 390 0 360Z" fill="#9ec7d8" opacity=".13"/>
+ <path d="M1000 1400H700C790 1320 700 1230 810 1160C900 1100 900 1010 1000 1035Z" fill="#e5b75f" opacity=".13"/>
+ <path d="M1000 0H820C860 75 805 130 875 190C930 240 935 315 1000 330Z" fill="#df7d68" opacity=".09"/>
+ <g transform="translate(825 65) scale(1.15)" fill="#102d47" opacity=".055">
+ <ellipse cx="50" cy="62" rx="24" ry="20"/><ellipse cx="25" cy="39" rx="10" ry="14"/><ellipse cx="43" cy="27" rx="9" ry="14"/><ellipse cx="61" cy="27" rx="9" ry="14"/><ellipse cx="78" cy="40" rx="10" ry="14"/></g>
+ </svg></div>`;
+}
 function coverHTML(cls='sheet cover'){return `<section class="${cls}"><div class="coverImg" style="background-image:url('${p.cover||''}')"></div><div class="shade"></div><div class="coverText"><div class="kicker">LillyTech Pet Stories · Su historia, a su manera</div><h1>${esc(p.name||'Mi mascota')}</h1><p>${esc(p.coverline||'Una historia que merece quedarse.')}</p></div></section>`}
 function photoPos(c,i){let q=(c.photoPos||[])[i]||{x:50,y:50};return `object-position:${q.x}% ${q.y}%`}
 function mainPhotoHTML(pics,c,offset=0){
@@ -149,11 +166,11 @@ function mainPhotoHTML(pics,c,offset=0){
 }
 function storyHTML(c,n,cls='sheet story'){
   let pics=(c.photos||[]).slice(0,4);
-  return `<section class="${cls}"><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="date">${fmt(c.date)}</div><span class="scribble">${c.cat==='Travesura'?'archivo oficial de travesuras ✦':c.cat==='Momento épico'?'esto merecía una página ✦':'un momento para guardar ✦'}</span><div class="copy">${esc(c.text||c.raw)}</div>${mainPhotoHTML(pics,c,0)}<span class="pageNo">${n}</span></section>`
+  return `<section class="${cls}">${decorHTML()}<span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="date">${fmt(c.date)}</div><span class="scribble">${c.cat==='Travesura'?'archivo oficial de travesuras ✦':c.cat==='Momento épico'?'esto merecía una página ✦':'un momento para guardar ✦'}</span><div class="copy">${esc(c.text||c.raw)}</div>${mainPhotoHTML(pics,c,0)}<span class="pageNo">${n}</span></section>`
 }
 function photoPageHTML(c,pics,n,part,cls='sheet story photoPage'){
   let one=pics.length===1?' one':'';
-  return `<section class="${cls}"><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="continuation">Más fotos de este recuerdo · ${part}</div><div class="photoOnlyGrid${one}">${pics.map((x,i)=>`<img src="${x}" style="${photoPos(c,4+(part-2)*4+i)}">`).join('')}</div><span class="pageNo">${n}</span></section>`
+  return `<section class="${cls}">${decorHTML()}<span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="continuation">Más fotos de este recuerdo · ${part}</div><div class="photoOnlyGrid${one}">${pics.map((x,i)=>`<img src="${x}" style="${photoPos(c,4+(part-2)*4+i)}">`).join('')}</div><span class="pageNo">${n}</span></section>`
 }
 function pages(){
   let out=[{kind:'cover'}];
@@ -178,19 +195,16 @@ function renderCoverManager(){
 }
 function renderPhotoManager(){
  if(!editingPhotos.length){photoManager.innerHTML='';return}
- photoManager.innerHTML='<div class="dragHint">↕ Arrastrá para ordenar. “Ajustar” mueve el encuadre sin alterar la foto original.</div>'+editingPhotos.map((src,i)=>{let q=editingPhotoPos[i]||{x:50,y:50};return `<div class="photoItem" draggable="true" data-photo-index="${i}"><img src="${src}" style="object-position:${q.x}% ${q.y}%"><div><b>☰ Foto ${i+1}</b><div class="photoBtns"><button type="button" class="btn adjustBtn" onclick="toggleAdjust(${i})">🎯 Ajustar</button><button type="button" class="btn" onclick="replaceChapterPhoto(${i})">🔄 Cambiar</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},-1)" ${i===0?'disabled':''}>←</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},1)" ${i===editingPhotos.length-1?'disabled':''}>→</button><button type="button" class="btn" onclick="deleteChapterPhoto(${i})">🗑 Eliminar</button></div><div class="adjustBox" id="adj${i}" style="display:none"><button type="button" class="btn" onclick="nudgePhoto(${i},0,-10)">↑</button><button type="button" class="btn" onclick="nudgePhoto(${i},-10,0)">←</button><button type="button" class="btn" onclick="centerPhoto(${i})">Centro</button><button type="button" class="btn" onclick="nudgePhoto(${i},10,0)">→</button><button type="button" class="btn" onclick="nudgePhoto(${i},0,10)">↓</button></div></div></div>`}).join('');
+ photoManager.innerHTML='<div class="dragHint">↕ Arrastrá para cambiar el orden. “Ajustar” abre un editor grande para mover el encuadre.</div>'+editingPhotos.map((src,i)=>{let q=editingPhotoPos[i]||{x:50,y:50};return `<div class="photoItem" draggable="true" data-photo-index="${i}"><img src="${src}" style="object-position:${q.x}% ${q.y}%"><div><b>☰ Foto ${i+1}</b><div class="photoBtns"><button type="button" class="btn" onclick="openCrop(${i})">🎯 Ajustar</button><button type="button" class="btn" onclick="replaceChapterPhoto(${i})">🔄 Cambiar</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},-1)" ${i===0?'disabled':''}>←</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},1)" ${i===editingPhotos.length-1?'disabled':''}>→</button><button type="button" class="btn" onclick="deleteChapterPhoto(${i})">🗑 Eliminar</button></div></div></div>`}).join('');
  let from=null;
  photoManager.querySelectorAll('.photoItem').forEach(el=>{
-  el.addEventListener('dragstart',e=>{from=Number(el.dataset.photoIndex);el.classList.add('dragging')});
+  el.addEventListener('dragstart',e=>{if(e.target.closest('button')){e.preventDefault();return}from=+el.dataset.photoIndex;el.classList.add('dragging')});
   el.addEventListener('dragend',()=>el.classList.remove('dragging'));
   el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('dragover')});
   el.addEventListener('dragleave',()=>el.classList.remove('dragover'));
-  el.addEventListener('drop',e=>{e.preventDefault();let to=Number(el.dataset.photoIndex);if(from===null||from===to)return;let [m]=editingPhotos.splice(from,1);editingPhotos.splice(to,0,m);let [q]=editingPhotoPos.splice(from,1);editingPhotoPos.splice(to,0,q||{x:50,y:50});renderPhotoManager()});
+  el.addEventListener('drop',e=>{e.preventDefault();let to=+el.dataset.photoIndex;if(from===null||from===to)return;let [m]=editingPhotos.splice(from,1);editingPhotos.splice(to,0,m);let [q]=editingPhotoPos.splice(from,1);editingPhotoPos.splice(to,0,q||{x:50,y:50});renderPhotoManager()});
  });
 }
-window.toggleAdjust=i=>{let e=document.getElementById('adj'+i);if(e)e.style.display=e.style.display==='none'?'flex':'none'};
-window.nudgePhoto=(i,dx,dy)=>{let q=editingPhotoPos[i]||{x:50,y:50};editingPhotoPos[i]={x:Math.max(0,Math.min(100,q.x+dx)),y:Math.max(0,Math.min(100,q.y+dy))};renderPhotoManager();setTimeout(()=>{let e=document.getElementById('adj'+i);if(e)e.style.display='flex'},0)};
-window.centerPhoto=i=>{editingPhotoPos[i]={x:50,y:50};renderPhotoManager();setTimeout(()=>{let e=document.getElementById('adj'+i);if(e)e.style.display='flex'},0)};
 window.deleteChapterPhoto=i=>{editingPhotos.splice(i,1);editingPhotoPos.splice(i,1);renderPhotoManager()};
 window.moveChapterPhoto=(i,d)=>{let j=i+d;if(j<0||j>=editingPhotos.length)return;[editingPhotos[i],editingPhotos[j]]=[editingPhotos[j],editingPhotos[i]];[editingPhotoPos[i],editingPhotoPos[j]]=[editingPhotoPos[j],editingPhotoPos[i]];renderPhotoManager()};
 window.replaceChapterPhoto=i=>{let inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=async()=>{if(inp.files[0]){editingPhotos[i]=(await files(inp.files))[0];editingPhotoPos[i]=editingPhotoPos[i]||{x:50,y:50};renderPhotoManager()}};inp.click()};
@@ -213,7 +227,23 @@ shape.onclick=()=>{let s=raw.value.trim();if(!s){finaltext.value='';return}let n
 form.onsubmit=async e=>{e.preventDefault();let id=cid.value||'c'+Date.now(),old=p.chapters.find(x=>x.id===id),o={id,date:date.value,cat:cat.value,title:title.value,raw:raw.value,text:finaltext.value||raw.value,photos:[...editingPhotos],photoPos:editingPhotoPos.map(q=>({...q}))};p.chapters=old?p.chapters.map(x=>x.id===id?o:x):[...p.chapters,o];save();dlg.close();render()};
 dupBtn.onclick=()=>{p={...p,id:'copy'+Date.now(),name:p.name+' copia',chapters:p.chapters.map((c,i)=>({...c,id:'x'+Date.now()+i}))};save();render();alert('Libro duplicado. Ya podés personalizarlo.')};
 newBtn.onclick=()=>{if(confirm('¿Crear un libro nuevo?')){p={id:'p'+Date.now(),name:'Nueva mascota',type:'Perro',sex:'Macho',birth:'',arrival:'',coverline:'Una historia que merece quedarse.',cover:'',style:'magazine',font:'Trebuchet MS',chapters:[]};save();idx=0;render()}};
+
+let cropIndex=-1,cropDraft={x:50,y:50},cropStart=null;
+function updateCrop(){cropImg.style.objectPosition=`${cropDraft.x}% ${cropDraft.y}%`;cropPos.textContent=`Posición: ${Math.round(cropDraft.x)}% horizontal · ${Math.round(cropDraft.y)}% vertical`}
+window.openCrop=i=>{cropIndex=i;cropDraft={...(editingPhotoPos[i]||{x:50,y:50})};cropImg.src=editingPhotos[i];updateCrop();cropDlg.showModal()};
+function cropNudge(dx,dy){cropDraft.x=Math.max(0,Math.min(100,cropDraft.x+dx));cropDraft.y=Math.max(0,Math.min(100,cropDraft.y+dy));updateCrop()}
+cropUp.onclick=()=>cropNudge(0,-5);cropDown.onclick=()=>cropNudge(0,5);cropLeft.onclick=()=>cropNudge(-5,0);cropRight.onclick=()=>cropNudge(5,0);cropCenter.onclick=()=>{cropDraft={x:50,y:50};updateCrop()};
+cropCancel.onclick=()=>cropDlg.close();cropApply.onclick=()=>{if(cropIndex>=0)editingPhotoPos[cropIndex]={...cropDraft};cropDlg.close();renderPhotoManager()};
+cropStage.addEventListener('pointerdown',e=>{cropStart={px:e.clientX,py:e.clientY,x:cropDraft.x,y:cropDraft.y};cropStage.setPointerCapture(e.pointerId)});
+cropStage.addEventListener('pointermove',e=>{if(!cropStart)return;let r=cropStage.getBoundingClientRect();cropDraft.x=Math.max(0,Math.min(100,cropStart.x-(e.clientX-cropStart.px)/r.width*100));cropDraft.y=Math.max(0,Math.min(100,cropStart.y-(e.clientY-cropStart.py)/r.height*100));updateCrop()});
+cropStage.addEventListener('pointerup',()=>cropStart=null);cropStage.addEventListener('pointercancel',()=>cropStart=null);
 render();
 
 </script>
+
+<dialog id="cropDlg"><div class="cropModal"><h3>🎯 Ajustar foto</h3>
+<div class="cropLayout"><div class="cropStage" id="cropStage"><img id="cropImg"><div class="cropGrid"></div></div>
+<div class="cropControls"><div class="cropReadout">Arrastrá directamente la foto dentro del marco grande. También podés usar las flechas para ajustes finos.</div>
+<div class="cropArrows"><span></span><button class="btn" type="button" id="cropUp">↑</button><span></span><button class="btn" type="button" id="cropLeft">←</button><button class="btn" type="button" id="cropCenter">Centro</button><button class="btn" type="button" id="cropRight">→</button><span></span><button class="btn" type="button" id="cropDown">↓</button><span></span></div>
+<div id="cropPos" class="cropReadout"></div><button class="btn" type="button" id="cropCancel">Cancelar</button><button class="btn gold" type="button" id="cropApply">Aplicar encuadre</button></div></div></div></dialog>
 </body></html>
