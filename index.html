@@ -92,7 +92,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
 
 .photoManager{margin-top:9px;padding:10px;border:1px solid #d9dee0;border-radius:12px;background:#fff}
 .photoManager:empty{display:none}.photoItem{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:center;margin:7px 0;padding:7px;border-radius:10px;background:#f5f3ee}
-.photoItem img{width:72px;height:62px;object-fit:cover;border-radius:8px}.photoBtns{display:flex;gap:5px;flex-wrap:wrap}.photoBtns button{font-size:10px;padding:6px 8px}
+.photoItem img{width:72px;height:62px;object-fit:cover;border-radius:8px}.photoItem{cursor:grab}.photoItem.dragging{opacity:.45;outline:2px dashed var(--coral)}.photoItem.dragover{outline:2px solid var(--mustard)}.dragHint{font-size:10px;color:var(--muted);margin:5px 0 2px}.photoBtns{display:flex;gap:5px;flex-wrap:wrap}.photoBtns button{font-size:10px;padding:6px 8px}
 .coverTools{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}.coverThumb{width:100%;height:115px;object-fit:cover;border-radius:10px;margin-top:8px}
 
 .noPhotoFeature{margin-top:18px;min-height:360px;border-radius:18px;position:relative;overflow:hidden;background:linear-gradient(145deg,#173247 0%,#244d68 58%,#e7b94f 160%);display:flex;align-items:flex-end;padding:30px;color:white}
@@ -183,7 +183,15 @@ function renderCoverManager(){
 }
 function renderPhotoManager(){
   if(!editingPhotos.length){photoManager.innerHTML='';return}
-  photoManager.innerHTML=editingPhotos.map((src,i)=>`<div class="photoItem"><img src="${src}"><div><b>Foto ${i+1}</b><div class="photoBtns"><button type="button" class="btn" onclick="replaceChapterPhoto(${i})">🔄 Cambiar</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},-1)" ${i===0?'disabled':''}>←</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},1)" ${i===editingPhotos.length-1?'disabled':''}>→</button><button type="button" class="btn" onclick="deleteChapterPhoto(${i})">🗑 Eliminar</button></div></div></div>`).join('');
+  photoManager.innerHTML='<div class="dragHint">↕ Arrastrá las fotos para cambiar el orden. Ese será también el orden del libro y del PDF.</div>'+editingPhotos.map((src,i)=>`<div class="photoItem" draggable="true" data-photo-index="${i}"><img src="${src}"><div><b>☰ Foto ${i+1}</b><div class="photoBtns"><button type="button" class="btn" onclick="replaceChapterPhoto(${i})">🔄 Cambiar</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},-1)" ${i===0?'disabled':''}>←</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},1)" ${i===editingPhotos.length-1?'disabled':''}>→</button><button type="button" class="btn" onclick="deleteChapterPhoto(${i})">🗑 Eliminar</button></div></div></div>`).join('');
+  let from=null;
+  photoManager.querySelectorAll('.photoItem').forEach(el=>{
+    el.addEventListener('dragstart',e=>{from=Number(el.dataset.photoIndex);el.classList.add('dragging');e.dataTransfer.effectAllowed='move'});
+    el.addEventListener('dragend',()=>{el.classList.remove('dragging');photoManager.querySelectorAll('.photoItem').forEach(x=>x.classList.remove('dragover'))});
+    el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('dragover');e.dataTransfer.dropEffect='move'});
+    el.addEventListener('dragleave',()=>el.classList.remove('dragover'));
+    el.addEventListener('drop',e=>{e.preventDefault();let to=Number(el.dataset.photoIndex);el.classList.remove('dragover');if(from===null||from===to)return;let [moved]=editingPhotos.splice(from,1);editingPhotos.splice(to,0,moved);renderPhotoManager()});
+  });
 }
 window.deleteChapterPhoto=i=>{editingPhotos.splice(i,1);renderPhotoManager()};
 window.moveChapterPhoto=(i,d)=>{let j=i+d;if(j<0||j>=editingPhotos.length)return;[editingPhotos[i],editingPhotos[j]]=[editingPhotos[j],editingPhotos[i]];renderPhotoManager()};
@@ -224,7 +232,7 @@ async function uploadDataUrl(dataUrl,pathBase){let blob=dataUrlToBlob(dataUrl),p
 async function cloudInit(){
   const {data}=await sb.auth.getSession();
   cloudUser=data.session?.user||null;cloudUI();
-  if(cloudUser)await loadCloud();
+  if(cloudUser){cloudBadge.textContent='☁ Sesión iniciada · álbum local protegido';status.textContent='Álbum local protegido · guardá cuando estés lista'}
 }
 function cloudUI(){
   loginBtn.textContent=cloudUser?'Salir':'Entrar';
@@ -306,7 +314,7 @@ async function doSaveCloud(){
 }
 function saveCloud(){if(!cloudUser)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(doSaveCloud,900)}
 const originalSave=save;save=function(){originalSave();saveCloud()}
-sb.auth.onAuthStateChange((_event,session)=>{const was=cloudUser;cloudUser=session?.user||null;cloudUI();if(cloudUser&&!was)setTimeout(loadCloud,0)});
+sb.auth.onAuthStateChange((_event,session)=>{cloudUser=session?.user||null;cloudUI();if(cloudUser){cloudBadge.textContent='☁ Sesión iniciada · álbum local protegido';status.textContent='Álbum local protegido'}});
 cloudInit();
 
 render();
