@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LillyTech Pet Stories Studio V2</title>
+<title>LillyTech Pet Stories Studio V5.1</title>
 <style>
 :root{--navy:#102d47;--ink:#24323b;--paper:#fffdf8;--sand:#f3ede3;--coral:#df7d68;--mustard:#e5b75f;--sky:#9ec7d8;--line:#ded7cc;--muted:#72808a}
 *{box-sizing:border-box} body{margin:0;background:#e9edef;color:var(--ink);font-family:Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
@@ -93,21 +93,32 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
 .photoItem img{width:72px;height:62px;object-fit:cover;border-radius:8px}.photoItem{cursor:grab}.photoItem.dragging{opacity:.45;outline:2px dashed var(--coral)}.photoItem.dragover{outline:2px solid var(--mustard)}.dragHint{font-size:10px;color:var(--muted);margin:5px 0 2px}.photoBtns{display:flex;gap:5px;flex-wrap:wrap}.photoBtns button{font-size:10px;padding:6px 8px}
 .coverTools{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}.coverThumb{width:100%;height:115px;object-fit:cover;border-radius:10px;margin-top:8px}
 
-/* V4.2: printable decoration + large crop editor */
+/* V4.1 · fondo editorial suave */
+.sheet.story,.printPage.story{background:radial-gradient(ellipse at 8% 10%,rgba(158,199,216,.16) 0 7%,transparent 18%),radial-gradient(ellipse at 92% 88%,rgba(229,183,95,.13) 0 8%,transparent 20%),radial-gradient(ellipse at 88% 12%,rgba(223,125,104,.10) 0 5%,transparent 15%),var(--paper)}
+.sheet.story:before,.printPage.story:before{content:"";position:absolute;right:18px;top:18px;width:82px;height:82px;opacity:.055;pointer-events:none;background-repeat:no-repeat;background-position:center;background-size:contain;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='%23102d47'%3E%3Cellipse cx='50' cy='62' rx='24' ry='20'/%3E%3Cellipse cx='25' cy='39' rx='10' ry='14'/%3E%3Cellipse cx='43' cy='27' rx='9' ry='14'/%3E%3Cellipse cx='61' cy='27' rx='9' ry='14'/%3E%3Cellipse cx='78' cy='40' rx='10' ry='14'/%3E%3C/g%3E%3C/svg%3E")}
+.adjustBox{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.adjustBox button{font-size:10px;padding:5px 7px}.adjustBtn{background:#eef5f8!important}
+
+/* V5.1 */
 .pageDecor{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .pageDecor svg{width:100%;height:100%;display:block}
 .sheet.story>*:not(.pageDecor),.printPage.story>*:not(.pageDecor){position:relative;z-index:1}
-#cropDlg{width:min(920px,94vw);max-width:920px}
-.cropModal{padding:22px}.cropLayout{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:20px}
-.cropStage{height:min(68vh,620px);min-height:430px;background:#e7ebed;border-radius:14px;overflow:hidden;position:relative;touch-action:none;cursor:grab;border:1px solid #ccd4d8}
+@media print{
+ .pageDecor{display:block!important;position:absolute!important;inset:0!important;z-index:0!important}
+ .pageDecor svg{display:block!important}
+ .printPage.story>*:not(.pageDecor){position:relative!important;z-index:1!important}
+}
+#cropDlg{width:min(980px,95vw);max-width:980px;border:0;border-radius:18px;padding:0}
+#cropDlg::backdrop{background:#0b1d2dcc}
+.cropModal{padding:22px;background:#fff}.cropLayout{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:20px}
+.cropStage{height:min(70vh,650px);min-height:440px;background:#e8ecef;border-radius:14px;overflow:hidden;position:relative;touch-action:none;cursor:grab;border:1px solid #cbd3d8}
 .cropStage:active{cursor:grabbing}.cropStage img{width:100%;height:100%;object-fit:cover;user-select:none;pointer-events:none}
-.cropGrid{position:absolute;inset:0;background:linear-gradient(to right,transparent 33.1%,#fff8 33.3%,#fff8 33.7%,transparent 33.9%,transparent 66.1%,#fff8 66.3%,#fff8 66.7%,transparent 66.9%),linear-gradient(to bottom,transparent 33.1%,#fff8 33.3%,#fff8 33.7%,transparent 33.9%,transparent 66.1%,#fff8 66.3%,#fff8 66.7%,transparent 66.9%);pointer-events:none}
-.cropControls{display:flex;flex-direction:column;gap:10px}.cropControls .btn{border:1px solid #d2d8db}.cropReadout{font-size:12px;color:var(--muted);line-height:1.5}.cropArrows{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.cropArrows button{padding:10px}
-@media(max-width:700px){.cropLayout{grid-template-columns:1fr}.cropStage{min-height:330px;height:52vh}.cropControls{display:grid;grid-template-columns:1fr 1fr}}
-@media print{.pageDecor{display:block!important;position:absolute!important;inset:0!important;z-index:0!important}.pageDecor svg{display:block!important;width:100%!important;height:100%!important}.printPage.story>*:not(.pageDecor){position:relative!important;z-index:1!important}}
-</style></head>
+.cropGrid{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to right,transparent 33.1%,#fff9 33.3%,#fff9 33.6%,transparent 33.8%,transparent 66.2%,#fff9 66.4%,#fff9 66.7%,transparent 66.9%),linear-gradient(to bottom,transparent 33.1%,#fff9 33.3%,#fff9 33.6%,transparent 33.8%,transparent 66.2%,#fff9 66.4%,#fff9 66.7%,transparent 66.9%)}
+.cropControls{display:flex;flex-direction:column;gap:10px}.cropArrows{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.cropArrows button{padding:11px}.cropHelp{font-size:12px;color:#61717e;line-height:1.5}
+.cloudBox{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.cloudBox input{width:210px;padding:8px;border-radius:9px;border:1px solid #ccd4da}.cloudMsg{font-size:10px;color:#dce7ef;max-width:260px}
+@media(max-width:720px){.cropLayout{grid-template-columns:1fr}.cropStage{height:55vh;min-height:330px}.cropControls{display:grid;grid-template-columns:1fr 1fr}}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body>
-<header><div class="brand"><small>LillyTech</small>Pet Stories Studio V2</div><div class="actions"><span style="font-size:11px;align-self:center;color:#f3cb7d">💾 V4 recuperado · modo local seguro</span><button class="btn ghost" id="newBtn">Nuevo</button><button class="btn ghost" id="dupBtn">Duplicar</button><button class="btn gold" id="printBtn">Exportar / PDF</button></div></header>
+<header><div class="brand"><small>LillyTech</small>Pet Stories Studio V5.1</div><div class="actions"><span style="font-size:11px;align-self:center;color:#f3cb7d">💾 V5.1 · local seguro + nube manual</span><button class="btn ghost" id="loginBtn">Entrar</button><button class="btn ghost" id="cloudSaveBtn">☁ Guardar nube</button><button class="btn ghost" id="booksBtn">📚 Mis libros</button><button class="btn ghost" id="newBtn">Nuevo</button><button class="btn ghost" id="dupBtn">Duplicar</button><button class="btn gold" id="printBtn">Exportar / PDF</button></div></header>
 <div class="app"><aside>
 <div class="tabs"><button class="tab active" data-tab="pet">Mascota</button><button class="tab" data-tab="look">Estilo</button><button class="tab" data-tab="chapters">Historias</button></div>
 <section class="panel active" id="pet"><h3>La estrella del libro</h3>
@@ -148,11 +159,10 @@ function files(fs){return Promise.all([...fs].map(f=>new Promise((ok,no)=>{let r
 function save(){try{localStorage.setItem('petStoriesV4Recovered',JSON.stringify(p));status.textContent='Guardado ✓'}catch(e){status.textContent='Fotos demasiado pesadas para almacenamiento local'}}
 function decorHTML(){
  return `<div class="pageDecor" aria-hidden="true"><svg viewBox="0 0 1000 1400" preserveAspectRatio="none">
- <path d="M0 0H280C220 80 300 145 210 215C120 285 95 390 0 360Z" fill="#9ec7d8" opacity=".13"/>
- <path d="M1000 1400H700C790 1320 700 1230 810 1160C900 1100 900 1010 1000 1035Z" fill="#e5b75f" opacity=".13"/>
- <path d="M1000 0H820C860 75 805 130 875 190C930 240 935 315 1000 330Z" fill="#df7d68" opacity=".09"/>
- <g transform="translate(825 65) scale(1.15)" fill="#102d47" opacity=".055">
- <ellipse cx="50" cy="62" rx="24" ry="20"/><ellipse cx="25" cy="39" rx="10" ry="14"/><ellipse cx="43" cy="27" rx="9" ry="14"/><ellipse cx="61" cy="27" rx="9" ry="14"/><ellipse cx="78" cy="40" rx="10" ry="14"/></g>
+ <path d="M0 0H300C225 95 315 165 205 235C120 290 100 390 0 370Z" fill="#9ec7d8" opacity=".15"/>
+ <path d="M1000 1400H680C790 1315 690 1220 815 1145C915 1085 900 1000 1000 1020Z" fill="#e5b75f" opacity=".14"/>
+ <path d="M1000 0H825C865 75 805 135 880 195C940 245 935 315 1000 340Z" fill="#df7d68" opacity=".10"/>
+ <g transform="translate(820 55) scale(1.2)" fill="#102d47" opacity=".065"><ellipse cx="50" cy="62" rx="24" ry="20"/><ellipse cx="25" cy="39" rx="10" ry="14"/><ellipse cx="43" cy="27" rx="9" ry="14"/><ellipse cx="61" cy="27" rx="9" ry="14"/><ellipse cx="78" cy="40" rx="10" ry="14"/></g>
  </svg></div>`;
 }
 function coverHTML(cls='sheet cover'){return `<section class="${cls}"><div class="coverImg" style="background-image:url('${p.cover||''}')"></div><div class="shade"></div><div class="coverText"><div class="kicker">LillyTech Pet Stories · Su historia, a su manera</div><h1>${esc(p.name||'Mi mascota')}</h1><p>${esc(p.coverline||'Una historia que merece quedarse.')}</p></div></section>`}
@@ -194,16 +204,17 @@ function renderCoverManager(){
   $('deleteCover').onclick=()=>{if(confirm('¿Eliminar la foto principal?')){p.cover='';coverfile.value='';save();render()}};
 }
 function renderPhotoManager(){
- if(!editingPhotos.length){photoManager.innerHTML='';return}
- photoManager.innerHTML='<div class="dragHint">↕ Arrastrá para cambiar el orden. “Ajustar” abre un editor grande para mover el encuadre.</div>'+editingPhotos.map((src,i)=>{let q=editingPhotoPos[i]||{x:50,y:50};return `<div class="photoItem" draggable="true" data-photo-index="${i}"><img src="${src}" style="object-position:${q.x}% ${q.y}%"><div><b>☰ Foto ${i+1}</b><div class="photoBtns"><button type="button" class="btn" onclick="openCrop(${i})">🎯 Ajustar</button><button type="button" class="btn" onclick="replaceChapterPhoto(${i})">🔄 Cambiar</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},-1)" ${i===0?'disabled':''}>←</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},1)" ${i===editingPhotos.length-1?'disabled':''}>→</button><button type="button" class="btn" onclick="deleteChapterPhoto(${i})">🗑 Eliminar</button></div></div></div>`}).join('');
- let from=null;
- photoManager.querySelectorAll('.photoItem').forEach(el=>{
-  el.addEventListener('dragstart',e=>{if(e.target.closest('button')){e.preventDefault();return}from=+el.dataset.photoIndex;el.classList.add('dragging')});
-  el.addEventListener('dragend',()=>el.classList.remove('dragging'));
-  el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('dragover')});
-  el.addEventListener('dragleave',()=>el.classList.remove('dragover'));
-  el.addEventListener('drop',e=>{e.preventDefault();let to=+el.dataset.photoIndex;if(from===null||from===to)return;let [m]=editingPhotos.splice(from,1);editingPhotos.splice(to,0,m);let [q]=editingPhotoPos.splice(from,1);editingPhotoPos.splice(to,0,q||{x:50,y:50});renderPhotoManager()});
- });
+  if(!editingPhotos.length){photoManager.innerHTML='';return}
+  photoManager.innerHTML='<div class="dragHint">↕ Arrastrá para ordenar · 🎯 Ajustar abre el editor grande.</div>'+
+  editingPhotos.map((src,i)=>{let q=editingPhotoPos[i]||{x:50,y:50};return `<div class="photoItem" draggable="true" data-photo-index="${i}"><img src="${src}" style="object-position:${q.x}% ${q.y}%"><div><b>☰ Foto ${i+1}</b><div class="photoBtns"><button type="button" class="btn" onclick="openCrop(${i})">🎯 Ajustar</button><button type="button" class="btn" onclick="replaceChapterPhoto(${i})">🔄 Cambiar</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},-1)" ${i===0?'disabled':''}>←</button><button type="button" class="btn" onclick="moveChapterPhoto(${i},1)" ${i===editingPhotos.length-1?'disabled':''}>→</button><button type="button" class="btn" onclick="deleteChapterPhoto(${i})">🗑 Eliminar</button></div></div></div>`}).join('');
+  let from=null;
+  photoManager.querySelectorAll('.photoItem').forEach(el=>{
+    el.addEventListener('dragstart',e=>{if(e.target.closest('button')){e.preventDefault();return}from=Number(el.dataset.photoIndex);el.classList.add('dragging')});
+    el.addEventListener('dragend',()=>el.classList.remove('dragging'));
+    el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('dragover')});
+    el.addEventListener('dragleave',()=>el.classList.remove('dragover'));
+    el.addEventListener('drop',e=>{e.preventDefault();let to=Number(el.dataset.photoIndex);if(from===null||from===to)return;let [m]=editingPhotos.splice(from,1);editingPhotos.splice(to,0,m);let [q]=editingPhotoPos.splice(from,1);editingPhotoPos.splice(to,0,q||{x:50,y:50});renderPhotoManager()});
+  });
 }
 window.deleteChapterPhoto=i=>{editingPhotos.splice(i,1);editingPhotoPos.splice(i,1);renderPhotoManager()};
 window.moveChapterPhoto=(i,d)=>{let j=i+d;if(j<0||j>=editingPhotos.length)return;[editingPhotos[i],editingPhotos[j]]=[editingPhotos[j],editingPhotos[i]];[editingPhotoPos[i],editingPhotoPos[j]]=[editingPhotoPos[j],editingPhotoPos[i]];renderPhotoManager()};
@@ -211,7 +222,7 @@ window.replaceChapterPhoto=i=>{let inp=document.createElement('input');inp.type=
 function render(){book.style.setProperty('--titleFont',`"${p.font}"`);let ps=pages();idx=Math.min(idx,Math.max(0,Math.ceil(ps.length/2)-1));let start=idx*2, pair=ps.slice(start,start+2);spread.innerHTML=pair.map((x,i)=>pageHTML(x,start+i+1)).join('');if(pair.length===1)spread.insertAdjacentHTML('beforeend','<section class="sheet"></section>');count.textContent=`Páginas ${start+1}–${Math.min(start+2,ps.length)} de ${ps.length}`;prev.disabled=idx===0;next.disabled=start+2>=ps.length;
 fullbook.innerHTML=ps.map((x,i)=>pageHTML(x,i+1,x.kind==='cover'?'printPage coverPrint':x.kind==='photos'?'printPage story photoPage':'printPage story')).join('');renderList();sync();renderCoverManager()}
 function renderList(){chapterList.innerHTML='';p.chapters.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(c=>{let d=document.createElement('div');d.className='chapter';d.innerHTML=`<div><b>${esc(c.title)}</b><small>${fmt(c.date)} · ${esc(c.cat)}</small></div><div><button class="btn" onclick="editC('${c.id}')">Editar</button><button class="btn" onclick="delC('${c.id}')">×</button></div>`;chapterList.appendChild(d)})}
-function sync(){name.value=p.name||'';type.value=p.type||'Perro';sex.value=p.sex||'Macho';birth.value=p.birth||'';arrival.value=p.arrival||'';coverline.value=p.coverline||'';font.value=p.font||'Trebuchet MS';document.querySelectorAll('.style').forEach(x=>x.classList.toggle('sel',x.dataset.style===p.style))}
+function sync(){$('name').value=p.name||'';type.value=p.type||'Perro';sex.value=p.sex||'Macho';birth.value=p.birth||'';arrival.value=p.arrival||'';coverline.value=p.coverline||'';font.value=p.font||'Trebuchet MS';document.querySelectorAll('.style').forEach(x=>x.classList.toggle('sel',x.dataset.style===p.style))}
 ['name','type','sex','birth','arrival','coverline','font'].forEach(id=>$(id).addEventListener(id==='name'||id==='coverline'?'input':'change',()=>{p[id]= $(id).value;save();render()}));
 coverfile.onchange=async()=>{if(coverfile.files[0]){p.cover=(await files(coverfile.files))[0];save();render()}};
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));t.classList.add('active');$(t.dataset.tab).classList.add('active')});
@@ -229,21 +240,111 @@ dupBtn.onclick=()=>{p={...p,id:'copy'+Date.now(),name:p.name+' copia',chapters:p
 newBtn.onclick=()=>{if(confirm('¿Crear un libro nuevo?')){p={id:'p'+Date.now(),name:'Nueva mascota',type:'Perro',sex:'Macho',birth:'',arrival:'',coverline:'Una historia que merece quedarse.',cover:'',style:'magazine',font:'Trebuchet MS',chapters:[]};save();idx=0;render()}};
 
 let cropIndex=-1,cropDraft={x:50,y:50},cropStart=null;
-function updateCrop(){cropImg.style.objectPosition=`${cropDraft.x}% ${cropDraft.y}%`;cropPos.textContent=`Posición: ${Math.round(cropDraft.x)}% horizontal · ${Math.round(cropDraft.y)}% vertical`}
+function updateCrop(){cropImg.style.objectPosition=`${cropDraft.x}% ${cropDraft.y}%`;cropPos.textContent=`Horizontal ${Math.round(cropDraft.x)}% · Vertical ${Math.round(cropDraft.y)}%`}
 window.openCrop=i=>{cropIndex=i;cropDraft={...(editingPhotoPos[i]||{x:50,y:50})};cropImg.src=editingPhotos[i];updateCrop();cropDlg.showModal()};
 function cropNudge(dx,dy){cropDraft.x=Math.max(0,Math.min(100,cropDraft.x+dx));cropDraft.y=Math.max(0,Math.min(100,cropDraft.y+dy));updateCrop()}
-cropUp.onclick=()=>cropNudge(0,-5);cropDown.onclick=()=>cropNudge(0,5);cropLeft.onclick=()=>cropNudge(-5,0);cropRight.onclick=()=>cropNudge(5,0);cropCenter.onclick=()=>{cropDraft={x:50,y:50};updateCrop()};
-cropCancel.onclick=()=>cropDlg.close();cropApply.onclick=()=>{if(cropIndex>=0)editingPhotoPos[cropIndex]={...cropDraft};cropDlg.close();renderPhotoManager()};
+cropUp.onclick=()=>cropNudge(0,-5);cropDown.onclick=()=>cropNudge(0,5);cropLeft.onclick=()=>cropNudge(-5,0);cropRight.onclick=()=>cropNudge(5,0);
+cropCenter.onclick=()=>{cropDraft={x:50,y:50};updateCrop()};cropCancel.onclick=()=>cropDlg.close();
+cropApply.onclick=()=>{if(cropIndex>=0)editingPhotoPos[cropIndex]={...cropDraft};cropDlg.close();renderPhotoManager()};
 cropStage.addEventListener('pointerdown',e=>{cropStart={px:e.clientX,py:e.clientY,x:cropDraft.x,y:cropDraft.y};cropStage.setPointerCapture(e.pointerId)});
 cropStage.addEventListener('pointermove',e=>{if(!cropStart)return;let r=cropStage.getBoundingClientRect();cropDraft.x=Math.max(0,Math.min(100,cropStart.x-(e.clientX-cropStart.px)/r.width*100));cropDraft.y=Math.max(0,Math.min(100,cropStart.y-(e.clientY-cropStart.py)/r.height*100));updateCrop()});
 cropStage.addEventListener('pointerup',()=>cropStart=null);cropStage.addEventListener('pointercancel',()=>cropStart=null);
+
+/* V5.1 Supabase: sincronización EXPLÍCITA. Nunca carga ni sobrescribe automáticamente. */
+const SUPABASE_URL='https://vgkyoyosjewdygxtnqvu.supabase.co';
+const SUPABASE_KEY='sb_publishable_QOZiGlFdzOcCQtqDqI_I_A_ian2l-pf';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let cloudUser=null;
+function cloudLabel(msg){status.textContent=msg}
+async function cloudInit(){try{let {data}=await sb.auth.getUser();cloudUser=data.user||null;loginBtn.textContent=cloudUser?'Salir':'Entrar'}catch(e){}}
+loginBtn.onclick=async()=>{
+ if(cloudUser){await sb.auth.signOut();cloudUser=null;loginBtn.textContent='Entrar';cloudLabel('Sesión de nube cerrada');return}
+ if(location.protocol==='file:'){alert('Para entrar a Supabase, primero publicá este index.html en GitHub Pages. El libro local seguirá intacto.');return}
+ let email=prompt('Correo para entrar a Pet Stories:');if(!email)return;
+ let {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.href}});
+ alert(error?'No pude enviar el acceso: '+error.message:'Te envié el enlace de acceso. Al volver, el libro local seguirá exactamente igual.')
+};
+sb.auth.onAuthStateChange((_e,session)=>{cloudUser=session?.user||null;loginBtn.textContent=cloudUser?'Salir':'Entrar'});
+
+function isUuid(v){return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v||'')}
+async function srcBlob(src){
+ if(src.startsWith('data:')){let r=await fetch(src);return await r.blob()}
+ let r=await fetch(src);if(!r.ok)throw new Error('No pude leer una imagen para subirla');return await r.blob()
+}
+async function uploadImage(src,path){
+ let blob=await srcBlob(src), ext=(blob.type.split('/')[1]||'jpg').replace('jpeg','jpg');
+ path=path.replace(/\.[^.]+$/,'.'+ext);
+ let {error}=await sb.storage.from('pet-stories').upload(path,blob,{upsert:true,contentType:blob.type});
+ if(error)throw error;return path
+}
+cloudSaveBtn.onclick=async()=>{
+ if(!cloudUser){alert('Primero entrá a Supabase.');return}
+ if(!confirm('¿Guardar una copia de este libro en Supabase? El libro local NO se borra ni se reemplaza.'))return;
+ cloudSaveBtn.disabled=true;cloudLabel('Subiendo libro a Supabase…');
+ try{
+  let payload={owner_id:cloudUser.id,pet_name:p.name||'Nueva mascota',pet_type:p.type||'Perro',pet_sex:p.sex||'Sin especificar',birth_date:p.birth||null,arrival_date:p.arrival||null,cover_line:p.coverline||'',theme:p.style||'magazine',title_font:p.font||'Trebuchet MS',updated_at:new Date().toISOString()};
+  let res=isUuid(p.cloudId)?await sb.from('pet_books').update(payload).eq('id',p.cloudId).select().single():await sb.from('pet_books').insert(payload).select().single();
+  if(res.error)throw res.error;
+  let bookId=res.data.id;p.cloudId=bookId;
+  if(p.cover){let cp=await uploadImage(p.cover,`${cloudUser.id}/${bookId}/cover.jpg`);let u=await sb.from('pet_books').update({cover_path:cp}).eq('id',bookId);if(u.error)throw u.error}
+  let old=await sb.from('pet_chapters').select('id').eq('book_id',bookId);if(old.error)throw old.error;
+  if(old.data?.length){let d=await sb.from('pet_chapters').delete().eq('book_id',bookId);if(d.error)throw d.error}
+  for(let ci=0;ci<p.chapters.length;ci++){
+   let c=p.chapters[ci],cr=await sb.from('pet_chapters').insert({book_id:bookId,chapter_date:c.date||null,category:c.cat||'Otro',title:c.title||'Sin título',raw_text:c.raw||'',final_text:c.text||'',sort_order:ci,layout_style:'auto'}).select().single();
+   if(cr.error)throw cr.error;
+   for(let i=0;i<(c.photos||[]).length;i++){
+    cloudLabel(`Subiendo ${p.name}: capítulo ${ci+1}, foto ${i+1}…`);
+    let sp=await uploadImage(c.photos[i],`${cloudUser.id}/${bookId}/${cr.data.id}/${i+1}.jpg`);
+    let q=(c.photoPos||[])[i]||{x:50,y:50};
+    let mr=await sb.from('pet_media').insert({book_id:bookId,chapter_id:cr.data.id,storage_path:sp,caption:JSON.stringify(q),sort_order:i});
+    if(mr.error)throw mr.error
+   }
+  }
+  save();cloudLabel('☁ Guardado en Supabase ✓');alert('Libro guardado en Supabase. La copia local se conserva.')
+ }catch(e){console.error(e);cloudLabel('☁ Error: '+(e.message||e));alert('Supabase no pudo completar el guardado:\\n'+(e.message||e)+'\\n\\nTu libro local no fue modificado.')}
+ finally{cloudSaveBtn.disabled=false}
+};
+booksBtn.onclick=async()=>{
+ if(!cloudUser){alert('Primero entrá a Supabase.');return}
+ booksList.innerHTML='Buscando libros…';booksDlg.showModal();
+ let {data,error}=await sb.from('pet_books').select('id,pet_name,pet_type,updated_at').order('updated_at',{ascending:false});
+ if(error){booksList.textContent='No pude leer la biblioteca: '+error.message;return}
+ booksList.innerHTML=data?.length?data.map(b=>`<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #ddd"><div><b>${esc(b.pet_name||'Sin nombre')}</b><br><small>${esc(b.pet_type||'Mascota')} · ${new Date(b.updated_at).toLocaleString()}</small></div><button class="btn" onclick="loadCloudBook('${b.id}')">Abrir</button></div>`).join(''):'Todavía no hay libros guardados.';
+};
+booksClose.onclick=()=>booksDlg.close();
+window.loadCloudBook=async id=>{
+ if(!confirm('¿Abrir este libro? Primero se guardará una copia de seguridad del libro actual en este navegador.'))return;
+ try{
+  localStorage.setItem('petStoriesBeforeCloudOpen',JSON.stringify(p));
+  let br=await sb.from('pet_books').select('*').eq('id',id).single();if(br.error)throw br.error;
+  let cr=await sb.from('pet_chapters').select('*').eq('book_id',id).order('sort_order');if(cr.error)throw cr.error;
+  let mr=await sb.from('pet_media').select('*').eq('book_id',id).order('sort_order');if(mr.error)throw mr.error;
+  let media=mr.data||[];
+  async function signed(path){if(!path)return '';let r=await sb.storage.from('pet-stories').createSignedUrl(path,60*60*24*7);if(r.error)throw r.error;return r.data.signedUrl}
+  let cover=await signed(br.data.cover_path);
+  let chapters=[];
+  for(let c of cr.data||[]){
+   let cm=media.filter(m=>m.chapter_id===c.id), photos=[], photoPos=[];
+   for(let m of cm){photos.push(await signed(m.storage_path));try{photoPos.push(JSON.parse(m.caption)||{x:50,y:50})}catch(e){photoPos.push({x:50,y:50})}}
+   chapters.push({id:c.id,date:c.chapter_date||'',cat:c.category||'Otro',title:c.title||'',raw:c.raw_text||'',text:c.final_text||'',photos,photoPos})
+  }
+  p={id:'cloud-'+id,cloudId:id,name:br.data.pet_name||'Mascota',type:br.data.pet_type||'Perro',sex:br.data.pet_sex||'Sin especificar',birth:br.data.birth_date||'',arrival:br.data.arrival_date||'',coverline:br.data.cover_line||'',cover,style:br.data.theme||'magazine',font:br.data.title_font||'Trebuchet MS',chapters};
+  save();idx=0;booksDlg.close();render();cloudLabel('☁ Libro abierto · copia anterior preservada localmente')
+ }catch(e){alert('No pude abrir el libro: '+(e.message||e))}
+};
+cloudInit();
 render();
 
 </script>
 
-<dialog id="cropDlg"><div class="cropModal"><h3>🎯 Ajustar foto</h3>
+<dialog id="cropDlg"><div class="cropModal"><h3 style="margin-top:0">🎯 Ajustar encuadre</h3>
 <div class="cropLayout"><div class="cropStage" id="cropStage"><img id="cropImg"><div class="cropGrid"></div></div>
-<div class="cropControls"><div class="cropReadout">Arrastrá directamente la foto dentro del marco grande. También podés usar las flechas para ajustes finos.</div>
+<div class="cropControls"><div class="cropHelp"><b>Arrastrá la foto directamente.</b><br>Movela hasta que la parte importante quede dentro del marco. Las flechas sirven para ajustes pequeños.</div>
 <div class="cropArrows"><span></span><button class="btn" type="button" id="cropUp">↑</button><span></span><button class="btn" type="button" id="cropLeft">←</button><button class="btn" type="button" id="cropCenter">Centro</button><button class="btn" type="button" id="cropRight">→</button><span></span><button class="btn" type="button" id="cropDown">↓</button><span></span></div>
-<div id="cropPos" class="cropReadout"></div><button class="btn" type="button" id="cropCancel">Cancelar</button><button class="btn gold" type="button" id="cropApply">Aplicar encuadre</button></div></div></div></dialog>
+<div id="cropPos" class="cropHelp"></div><button class="btn" type="button" id="cropCancel">Cancelar</button><button class="btn gold" type="button" id="cropApply">Aplicar encuadre</button></div></div></div></dialog>
+
+<dialog id="booksDlg" style="width:min(720px,94vw);border:0;border-radius:16px"><div style="padding:20px">
+<h3 style="margin-top:0">📚 Mis libros en Supabase</h3><p class="hint">La nube nunca reemplaza automáticamente el libro abierto. Vos elegís cuál cargar.</p>
+<div id="booksList"></div><div style="margin-top:15px;text-align:right"><button class="btn" type="button" id="booksClose">Cerrar</button></div>
+</div></dialog>
 </body></html>
