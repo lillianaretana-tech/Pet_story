@@ -75,8 +75,6 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
  .printPage.story .scribble{font-size:4mm!important;margin:2mm 0!important}
  .printPage.story .copy{font-size:4.2mm!important;line-height:1.55!important;margin-bottom:3mm!important}
  .printPage.story .photoHero{width:100%!important;height:128mm!important;object-fit:cover!important;margin-top:4mm!important}
- .printPage.story .noPhotoFeature{min-height:125mm!important;margin-top:5mm!important;padding:10mm!important;border-radius:5mm!important}
- .printPage.story .noPhotoFeature .quote{font-size:8mm!important;line-height:1.2!important}.printPage.story .noPhotoFeature .mini{font-size:3mm!important}
  .printPage.story .collage{display:grid!important;grid-template-columns:1fr 1fr!important;gap:3mm!important;margin-top:4mm!important}
  .printPage.story .collage img{width:100%!important;height:108mm!important;object-fit:cover!important}
  .printPage.story .gallery3{display:grid!important;grid-template-columns:1.15fr .85fr!important;grid-template-rows:54mm 54mm!important;gap:3mm!important;margin-top:4mm!important}
@@ -94,12 +92,6 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
 .photoManager:empty{display:none}.photoItem{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:center;margin:7px 0;padding:7px;border-radius:10px;background:#f5f3ee}
 .photoItem img{width:72px;height:62px;object-fit:cover;border-radius:8px}.photoItem{cursor:grab}.photoItem.dragging{opacity:.45;outline:2px dashed var(--coral)}.photoItem.dragover{outline:2px solid var(--mustard)}.dragHint{font-size:10px;color:var(--muted);margin:5px 0 2px}.photoBtns{display:flex;gap:5px;flex-wrap:wrap}.photoBtns button{font-size:10px;padding:6px 8px}
 .coverTools{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}.coverThumb{width:100%;height:115px;object-fit:cover;border-radius:10px;margin-top:8px}
-
-.noPhotoFeature{margin-top:18px;min-height:360px;border-radius:18px;position:relative;overflow:hidden;background:linear-gradient(145deg,#173247 0%,#244d68 58%,#e7b94f 160%);display:flex;align-items:flex-end;padding:30px;color:white}
-.noPhotoFeature:before{content:"";position:absolute;width:230px;height:230px;border:2px solid #ffffff26;border-radius:50%;right:-65px;top:-60px}
-.noPhotoFeature:after{content:"✦";position:absolute;right:28px;top:25px;font-size:48px;color:#f3cb7d}
-.noPhotoFeature .quote{position:relative;z-index:1;font-family:Georgia,serif;font-size:27px;line-height:1.25;max-width:82%}
-.noPhotoFeature .mini{display:block;font-family:"Trebuchet MS",sans-serif;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#f3cb7d;margin-bottom:10px}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body>
 <header><div class="brand"><small>LillyTech</small>Pet Stories Studio V2</div><div class="actions"><span id="cloudBadge" style="font-size:11px;align-self:center;color:#f3cb7d">☁ Supabase listo</span><button class="btn ghost" id="loginBtn">Entrar</button><button class="btn ghost" id="newBtn">Nuevo</button><button class="btn ghost" id="dupBtn">Duplicar</button><button class="btn gold" id="printBtn">Exportar / PDF</button></div></header>
@@ -143,7 +135,7 @@ let p;try{p=JSON.parse(localStorage.getItem('petStoriesV2'))||seed}catch(e){p=se
 const $=x=>document.getElementById(x);const esc=s=>(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const fmt=d=>d?new Intl.DateTimeFormat('es-CR',{day:'numeric',month:'long',year:'numeric'}).format(new Date(d+'T12:00:00')):'';
 function files(fs){return Promise.all([...fs].map(f=>new Promise((ok,no)=>{let r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f)})))}
-function save(){try{localStorage.setItem('petStoriesV2',JSON.stringify(p));status.textContent=cloudUser?'Guardando en nube…':'Guardado temporal · iniciá sesión para nube'}catch(e){status.textContent='Guardando fotos en nube…'}}
+function save(){try{localStorage.setItem('petStoriesV2',JSON.stringify(p));status.textContent='Guardado ✓'}catch(e){status.textContent='Fotos demasiado pesadas para almacenamiento local'}}
 function coverHTML(cls='sheet cover'){return `<section class="${cls}"><div class="coverImg" style="background-image:url('${p.cover||''}')"></div><div class="shade"></div><div class="coverText"><div class="kicker">LillyTech Pet Stories · Su historia, a su manera</div><h1>${esc(p.name||'Mi mascota')}</h1><p>${esc(p.coverline||'Una historia que merece quedarse.')}</p></div></section>`}
 function mainPhotoHTML(pics){
   if(!pics.length)return '';
@@ -154,7 +146,7 @@ function mainPhotoHTML(pics){
 }
 function storyHTML(c,n,cls='sheet story'){
   let pics=(c.photos||[]).slice(0,4);
-  let visual=pics.length?mainPhotoHTML(pics):`<div class="noPhotoFeature"><div class="quote"><span class="mini">LillyTech Pet Stories</span>${esc(c.title||'Un recuerdo para guardar')}<br><span style="font-size:.58em;font-style:italic">Una página esperando esa foto que cuenta el comienzo de esta historia.</span></div></div>`; return `<section class="${cls}"><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="date">${fmt(c.date)}</div><span class="scribble">${c.cat==='Travesura'?'archivo oficial de travesuras ✦':c.cat==='Momento épico'?'esto merecía una página ✦':'un momento para guardar ✦'}</span><div class="copy">${esc(c.text||c.raw)}</div>${visual}<span class="pageNo">${n}</span></section>`
+  return `<section class="${cls}"><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="date">${fmt(c.date)}</div><span class="scribble">${c.cat==='Travesura'?'archivo oficial de travesuras ✦':c.cat==='Momento épico'?'esto merecía una página ✦':'un momento para guardar ✦'}</span><div class="copy">${esc(c.text||c.raw)}</div>${mainPhotoHTML(pics)}<span class="pageNo">${n}</span></section>`
 }
 function photoPageHTML(c,pics,n,part,cls='sheet story photoPage'){
   let one=pics.length===1?' one':'';
@@ -218,104 +210,14 @@ newBtn.onclick=()=>{if(confirm('¿Crear un libro nuevo?')){p={id:'p'+Date.now(),
 const SUPABASE_URL='https://vgkyoyosjewdygxtnqvu.supabase.co';
 const SUPABASE_KEY='sb_publishable_QOZiGlFdzOcCQtqDqI_I_A_ian2l-pf';
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const BUCKET='pet-stories';
-let cloudUser=null, cloudTimer=null, cloudSaving=false, cloudPending=false;
-
-function uuid(){return crypto.randomUUID()}
-function isUuid(v){return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v||'')}
-function dataUrlToBlob(dataUrl){let [head,data]=dataUrl.split(',');let mime=(head.match(/data:([^;]+)/)||[])[1]||'image/jpeg';let bin=atob(data),arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:mime})}
-function extFor(blob){return blob.type==='image/png'?'png':blob.type==='image/webp'?'webp':'jpg'}
-function pathFromSignedUrl(url){if(!url||url.startsWith('data:'))return null;let marker='/storage/v1/object/sign/'+BUCKET+'/';let i=url.indexOf(marker);if(i<0)return null;return decodeURIComponent(url.slice(i+marker.length).split('?')[0])}
-async function signed(path){if(!path)return '';const {data,error}=await sb.storage.from(BUCKET).createSignedUrl(path,60*60*24*30);if(error)throw error;return data.signedUrl}
-async function uploadDataUrl(dataUrl,pathBase){let blob=dataUrlToBlob(dataUrl),path=pathBase+'.'+extFor(blob);const {error}=await sb.storage.from(BUCKET).upload(path,blob,{contentType:blob.type,upsert:true});if(error)throw error;return path}
-
-async function cloudInit(){
-  const {data}=await sb.auth.getSession();
-  cloudUser=data.session?.user||null;cloudUI();
-  if(cloudUser){cloudBadge.textContent='☁ Sesión iniciada · álbum local protegido';status.textContent='Álbum local protegido · guardá cuando estés lista'}
-}
-function cloudUI(){
-  loginBtn.textContent=cloudUser?'Salir':'Entrar';
-  cloudBadge.textContent=cloudUser?'☁ Lilly_general conectado':'☁ Iniciá sesión para guardar';
-}
-loginBtn.onclick=async()=>{
-  if(cloudUser){await sb.auth.signOut();cloudUser=null;cloudUI();return}
-  const email=prompt('Correo para entrar a Pet Stories:');if(!email)return;
-  const redirect=location.origin+location.pathname;
-  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:redirect}});
-  alert(error?'No pude enviar el acceso: '+error.message:'Te envié un enlace de acceso al correo. Abrilo para entrar.')
-};
-
-async function loadCloud(){
-  cloudBadge.textContent='☁ Leyendo Lilly_general…';
-  const {data,error}=await sb.from('pet_books').select('*,pet_chapters(*)').order('updated_at',{ascending:false}).limit(1);
-  if(error){cloudBadge.textContent='☁ Error al leer nube';console.error(error);return}
-  if(!data?.length){cloudBadge.textContent='☁ Nube vacía · listo para guardar';return}
-  const b=data[0], chapters=(b.pet_chapters||[]).sort((a,z)=>a.sort_order-z.sort_order);
-  const {data:media,error:me}=await sb.from('pet_media').select('*').eq('book_id',b.id).order('sort_order');
-  if(me){console.error(me)}
-  let cover='';
-  if(b.cover_path){try{cover=await signed(b.cover_path)}catch(e){console.error(e)}}
-  const byChapter={};
-  for(const m of (media||[])){if(!m.chapter_id)continue;(byChapter[m.chapter_id]??=[]).push(m)}
-  const hydrated=[];
-  for(const c of chapters){
-    let photos=[];
-    for(const m of (byChapter[c.id]||[])){try{photos.push(await signed(m.storage_path))}catch(e){console.error(e)}}
-    hydrated.push({id:c.id,date:c.chapter_date||'',cat:c.category,title:c.title,raw:c.raw_text||'',text:c.final_text||'',photos})
-  }
-  p={id:b.id,name:b.pet_name,type:b.pet_type,sex:b.pet_sex,birth:b.birth_date||'',arrival:b.arrival_date||'',coverline:b.cover_line||'',cover,style:b.theme||'magazine',font:b.title_font||'Trebuchet MS',chapters:hydrated};
-  try{localStorage.setItem('petStoriesV2',JSON.stringify(p))}catch(e){}
-  render();status.textContent='Guardado en Supabase ✓';cloudBadge.textContent='☁ Cargado desde Lilly_general ✓';
-}
-
-async function doSaveCloud(){
-  if(!cloudUser)return;
-  if(cloudSaving){cloudPending=true;return}
-  cloudSaving=true;cloudPending=false;
-  try{
-    cloudBadge.textContent='☁ Guardando…';
-    let bookId=isUuid(p.id)?p.id:uuid(); p.id=bookId;
-    for(const c of p.chapters){if(!isUuid(c.id))c.id=uuid()}
-    let coverPath=pathFromSignedUrl(p.cover);
-    if(p.cover?.startsWith('data:')){
-      coverPath=await uploadDataUrl(p.cover,cloudUser.id+'/'+bookId+'/cover/'+uuid());
-      p.cover=await signed(coverPath);
-    }
-    const payload={id:bookId,owner_id:cloudUser.id,pet_name:p.name||'Nueva mascota',pet_type:p.type||'Perro',pet_sex:p.sex||'Sin especificar',birth_date:p.birth||null,arrival_date:p.arrival||null,cover_line:p.coverline||'',cover_path:coverPath,theme:p.style||'magazine',title_font:p.font||'Trebuchet MS',updated_at:new Date().toISOString()};
-    const br=await sb.from('pet_books').upsert(payload).select().single();if(br.error)throw br.error;
-
-    const chapterRows=p.chapters.map((c,i)=>({id:c.id,book_id:bookId,chapter_date:c.date||null,category:c.cat||'Otro',title:c.title||'Sin título',raw_text:c.raw||'',final_text:c.text||'',sort_order:i,layout_style:'auto',updated_at:new Date().toISOString()}));
-    if(chapterRows.length){const cr=await sb.from('pet_chapters').upsert(chapterRows);if(cr.error)throw cr.error}
-    const keep=p.chapters.map(c=>c.id);
-    let dq=sb.from('pet_chapters').delete().eq('book_id',bookId);if(keep.length)dq=dq.not('id','in','('+keep.join(',')+')');const dr=await dq;if(dr.error)throw dr.error;
-
-    const mediaRows=[];
-    for(const c of p.chapters){
-      for(let i=0;i<(c.photos||[]).length;i++){
-        let src=c.photos[i],path=pathFromSignedUrl(src);
-        if(src?.startsWith('data:')){
-          path=await uploadDataUrl(src,cloudUser.id+'/'+bookId+'/chapters/'+c.id+'/'+uuid());
-          c.photos[i]=await signed(path);
-        }
-        if(path)mediaRows.push({book_id:bookId,chapter_id:c.id,storage_path:path,sort_order:i,caption:''});
-      }
-    }
-    const md=await sb.from('pet_media').delete().eq('book_id',bookId);if(md.error)throw md.error;
-    if(mediaRows.length){const mi=await sb.from('pet_media').insert(mediaRows);if(mi.error)throw mi.error}
-    try{localStorage.setItem('petStoriesV2',JSON.stringify(p))}catch(e){}
-    render();status.textContent='Guardado en Supabase ✓';cloudBadge.textContent='☁ Guardado en Lilly_general ✓';
-  }catch(e){
-    console.error(e);status.textContent='Error al guardar en nube';cloudBadge.textContent='☁ Error de guardado';
-  }finally{
-    cloudSaving=false;
-    if(cloudPending){cloudPending=false;doSaveCloud()}
-  }
-}
-function saveCloud(){if(!cloudUser)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(doSaveCloud,900)}
+let cloudUser=null, cloudTimer=null;
+async function cloudInit(){const {data}=await sb.auth.getUser();cloudUser=data.user||null;cloudUI();if(cloudUser)await loadCloud()}
+function cloudUI(){loginBtn.textContent=cloudUser?'Salir':'Entrar';cloudBadge.textContent=cloudUser?'☁ Conectado a Lilly_general':'☁ Supabase listo · iniciá sesión'}
+loginBtn.onclick=async()=>{if(cloudUser){await sb.auth.signOut();cloudUser=null;cloudUI();return}if(location.protocol==='file:'){alert('La aplicación ya funciona localmente. Para iniciar sesión y sincronizar con Supabase, publicala primero en GitHub Pages o abrila desde una dirección https://.');return}const email=prompt('Correo para entrar a Pet Stories:');if(!email)return;const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.href}});alert(error?'No pude enviar el acceso: '+error.message:'Te envié un enlace de acceso al correo. Abrilo para entrar.')}
+async function loadCloud(){const {data,error}=await sb.from('pet_books').select('*,pet_chapters(*)').order('updated_at',{ascending:false}).limit(1);if(error){cloudBadge.textContent='☁ Error al leer nube';return}if(!data?.length){await saveCloud();return}const b=data[0];p={id:b.id,name:b.pet_name,type:b.pet_type,sex:b.pet_sex,birth:b.birth_date||'',arrival:b.arrival_date||'',coverline:b.cover_line||'',cover:'',style:b.theme||'magazine',font:b.title_font||'Trebuchet MS',chapters:(b.pet_chapters||[]).sort((a,z)=>a.sort_order-z.sort_order).map(c=>({id:c.id,date:c.chapter_date||'',cat:c.category,title:c.title,raw:c.raw_text||'',text:c.final_text||'',photos:[]}))};localStorage.setItem('petStoriesV2',JSON.stringify(p));render();cloudBadge.textContent='☁ Cargado desde Supabase'}
+async function saveCloud(){if(!cloudUser)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(async()=>{let bookId=(p.id&&String(p.id).includes('-'))?p.id:null;const payload={owner_id:cloudUser.id,pet_name:p.name||'Nueva mascota',pet_type:p.type||'Perro',pet_sex:p.sex||'Sin especificar',birth_date:p.birth||null,arrival_date:p.arrival||null,cover_line:p.coverline||'',theme:p.style||'magazine',title_font:p.font||'Trebuchet MS',updated_at:new Date().toISOString()};let res=bookId?await sb.from('pet_books').update(payload).eq('id',bookId).select().single():await sb.from('pet_books').insert(payload).select().single();if(res.error){cloudBadge.textContent='☁ No se pudo guardar';return}p.id=res.data.id;bookId=p.id;await sb.from('pet_chapters').delete().eq('book_id',bookId);if(p.chapters.length){const rows=p.chapters.map((c,i)=>({book_id:bookId,chapter_date:c.date||null,category:c.cat||'Otro',title:c.title||'Sin título',raw_text:c.raw||'',final_text:c.text||'',sort_order:i,layout_style:'auto'}));const cr=await sb.from('pet_chapters').insert(rows);if(cr.error){cloudBadge.textContent='☁ Libro guardado · error capítulos';return}}localStorage.setItem('petStoriesV2',JSON.stringify(p));cloudBadge.textContent='☁ Guardado en Supabase ✓'},700)}
 const originalSave=save;save=function(){originalSave();saveCloud()}
-sb.auth.onAuthStateChange((_event,session)=>{cloudUser=session?.user||null;cloudUI();if(cloudUser){cloudBadge.textContent='☁ Sesión iniciada · álbum local protegido';status.textContent='Álbum local protegido'}});
-cloudInit();
+sb.auth.onAuthStateChange((_event,session)=>{cloudUser=session?.user||null;cloudUI()});cloudInit();
 
 render();
 </script>
