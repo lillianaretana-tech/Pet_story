@@ -132,6 +132,15 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
 .backCover,.backCoverPrint{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--navy);background:#f8e8d5!important;position:relative;overflow:hidden}
 .backCover:before,.backCoverPrint:before{content:"";position:absolute;inset:18px;border:2px solid rgba(16,45,71,.18);border-radius:42% 58% 47% 53%/55% 45% 55% 45%}
 .backPaw{font-size:66px;filter:grayscale(1);opacity:.16}.backLine{font-size:10px;letter-spacing:.24em;text-transform:uppercase;font-weight:900;color:var(--coral);margin-top:14px}.backCover h2,.backCoverPrint h2{font-family:Georgia,serif;font-size:58px;margin:12px 0 5px}.backCover p,.backCoverPrint p{font-family:Georgia,serif;font-size:17px;max-width:430px;line-height:1.55}.backBadge{position:absolute;bottom:45px;border-top:1px solid rgba(16,45,71,.22);padding-top:10px;font-size:10px;letter-spacing:.16em;text-transform:uppercase}.backBadge b{font-size:15px}
+
+/* Lienzo A4 para descargar PDF sin usar una impresora virtual. */
+.pdfCapture{position:fixed!important;left:-12000px!important;top:0!important;width:794px!important;z-index:-1!important;background:#fff!important;display:block!important}
+.pdfCapture .printPage{box-sizing:border-box!important;width:794px!important;height:1123px!important;min-height:1123px!important;max-height:1123px!important;margin:0!important;padding:68px 60px 57px!important;box-shadow:none!important;overflow:hidden!important;position:relative!important;background-color:#fff9ef!important}
+.pdfCapture .coverPrint{padding:0!important}.pdfCapture .coverPrint .coverImg{position:absolute!important;inset:0!important;width:794px!important;height:1123px!important;background-size:cover!important;background-position:center!important}.pdfCapture .coverPrint .coverText{left:60px!important;right:60px!important;bottom:83px!important}.pdfCapture .coverPrint h1{font-size:95px!important;line-height:.88!important;margin:12px 0!important}.pdfCapture .coverPrint p{font-size:20px!important;line-height:1.38!important;max-width:585px!important}
+.pdfCapture .printPage.story{display:flex!important;flex-direction:column!important}.pdfCapture .printPage.story h2{font-size:49px!important;line-height:.96!important;margin:15px 0 8px!important}.pdfCapture .printPage.story .date{font-size:11px!important}.pdfCapture .printPage.story .tag{font-size:10px!important;padding:7px 11px!important}.pdfCapture .printPage.story .scribble{font-size:15px!important;margin:8px 0!important}.pdfCapture .printPage.story .copy{font-size:16px!important;line-height:1.5!important;padding:11px 15px!important;margin:9px 0 4px!important}.pdfCapture .printPage.story .photoHero{width:100%!important;height:469px!important;object-fit:cover!important;margin-top:15px!important}
+.pdfCapture .printPage.story .collage{grid-template-columns:1fr 1fr!important;gap:11px!important;margin-top:15px!important}.pdfCapture .printPage.story .collage img{height:393px!important}.pdfCapture .printPage.story .gallery3{grid-template-columns:1.15fr .85fr!important;grid-template-rows:197px 197px!important;gap:11px!important}.pdfCapture .printPage.story .gallery4{grid-template-columns:1fr 1fr!important;grid-template-rows:189px 189px!important;gap:11px!important}
+.pdfCapture .printPage.photoPage .photoOnlyGrid{grid-template-columns:1fr 1fr!important;gap:11px!important;margin-top:19px!important}.pdfCapture .printPage.photoPage .photoOnlyGrid img{height:382px!important}.pdfCapture .printPage.photoPage .photoOnlyGrid.one{grid-template-columns:1fr!important}.pdfCapture .printPage.photoPage .photoOnlyGrid.one img{height:794px!important}.pdfCapture .magIssue{font-size:9px!important;margin-bottom:15px!important;padding-bottom:8px!important}.pdfCapture .magQuote{right:57px!important;bottom:30px!important;font-size:12px!important}.pdfCapture .pageNo{right:26px!important;bottom:23px!important;width:27px!important;height:27px!important;font-size:11px!important}
+.pdfCapture .backCoverPrint{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:794px!important;height:1123px!important;padding:83px!important}.pdfCapture .backCoverPrint h2{font-size:83px!important}.pdfCapture .backCoverPrint p{font-size:19px!important;max-width:548px!important}.pdfCapture .backCoverPrint .backPaw{font-size:91px!important}.pdfCapture .backCoverPrint .backLine{font-size:11px!important}.pdfCapture .backCoverPrint .backBadge{bottom:76px!important}
 @media(max-width:720px){.cropLayout{grid-template-columns:1fr}.cropStage{height:55vh;min-height:330px}.cropControls{display:grid;grid-template-columns:1fr 1fr}}
 
 @media print{
@@ -271,7 +280,28 @@ document.querySelectorAll('.style').forEach(x=>x.onclick=()=>{p.style=x.dataset.
 prev.onclick=()=>{idx--;render()};next.onclick=()=>{idx++;render()};
 spreadMode.onclick=()=>{book.style.display='block';fullbook.classList.remove('active');nav.style.display='flex';spreadMode.classList.add('active');fullMode.classList.remove('active')};
 fullMode.onclick=()=>{book.style.display='none';fullbook.classList.add('active');nav.style.display='none';fullMode.classList.add('active');spreadMode.classList.remove('active')};
-printBtn.onclick=()=>{fullMode.click();setTimeout(()=>window.print(),120)};
+function loadExternalScript(src,test){if(test())return Promise.resolve();return new Promise((ok,no)=>{let old=document.querySelector(`script[data-pdf-lib="${src}"]`);if(old){old.addEventListener('load',ok,{once:true});old.addEventListener('error',no,{once:true});return}let s=document.createElement('script');s.src=src;s.dataset.pdfLib=src;s.onload=ok;s.onerror=()=>no(new Error('No se pudo cargar el generador de PDF'));document.head.appendChild(s)})}
+async function waitForImages(root){let imgs=[...root.querySelectorAll('img')];await Promise.all(imgs.map(img=>img.complete&&img.naturalWidth?img.decode?.().catch(()=>{}):new Promise(ok=>{img.onload=ok;img.onerror=ok;setTimeout(ok,15000)})))}
+printBtn.onclick=async()=>{
+ let oldText=printBtn.textContent,stage=null;
+ printBtn.disabled=true;printBtn.textContent='Preparando PDF…';cloudLabel('Preparando revista para descargar…');
+ try{
+  await loadExternalScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',()=>!!window.html2canvas);
+  await loadExternalScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js',()=>!!window.jspdf?.jsPDF);
+  if(document.fonts?.ready)await document.fonts.ready;
+  stage=document.createElement('div');stage.className='pdfCapture';stage.setAttribute('aria-hidden','true');stage.innerHTML=fullbook.innerHTML;document.body.appendChild(stage);
+  await waitForImages(stage);
+  let pages=[...stage.querySelectorAll('.printPage')];if(!pages.length)throw new Error('No encontré las páginas de la revista');
+  let PDF=window.jspdf.jsPDF,doc=new PDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
+  for(let i=0;i<pages.length;i++){
+   printBtn.textContent=`Página ${i+1} de ${pages.length}`;cloudLabel(`Generando PDF: página ${i+1} de ${pages.length}…`);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+   let canvas=await window.html2canvas(pages[i],{scale:1.25,useCORS:true,allowTaint:false,backgroundColor:'#fff9ef',logging:false,imageTimeout:30000});
+   let image=canvas.toDataURL('image/jpeg',0.82);if(i)doc.addPage('a4','portrait');doc.addImage(image,'JPEG',0,0,210,297,undefined,'FAST');canvas.width=1;canvas.height=1;
+  }
+  let safe=(p.name||'Mi_mascota').replace(/[^a-z0-9áéíóúüñ_-]+/gi,'_');doc.save(`LillyTech_Pet_Stories_${safe}.pdf`);cloudLabel('PDF descargado ✓');
+ }catch(e){console.error(e);cloudLabel('No se pudo generar el PDF');alert('No pude descargar el PDF directamente. Revisá que tengas conexión a internet y volvé a intentarlo.\n\nDetalle: '+(e.message||e))}
+ finally{if(stage)stage.remove();printBtn.disabled=false;printBtn.textContent=oldText}
+};
 function open(c){form.reset();cid.value=c?.id||'';dlgTitle.textContent=c?'Editar recuerdo':'Nuevo recuerdo';tone='natural';editingPhotos=[...(c?.photos||[])];editingPhotoPos=(c?.photoPos||[]).map(q=>({...q}));while(editingPhotoPos.length<editingPhotos.length)editingPhotoPos.push({x:50,y:50});document.querySelectorAll('.tone').forEach(x=>x.classList.toggle('sel',x.dataset.tone==='natural'));if(c){date.value=c.date;cat.value=c.cat;title.value=c.title;raw.value=c.raw||c.text;finaltext.value=c.text}renderPhotoManager();dlg.showModal()}
 add.onclick=()=>open();cancel.onclick=()=>dlg.close();photos.onchange=async()=>{if(photos.files.length){let added=await files(photos.files);editingPhotos.push(...added);added.forEach(()=>editingPhotoPos.push({x:50,y:50}));photos.value='';renderPhotoManager()}};window.editC=id=>open(p.chapters.find(x=>x.id===id));window.delC=id=>{if(confirm('¿Eliminar este recuerdo?')){p.chapters=p.chapters.filter(x=>x.id!==id);save();render()}};
 document.querySelectorAll('.tone').forEach(x=>x.onclick=()=>{tone=x.dataset.tone;document.querySelectorAll('.tone').forEach(y=>y.classList.toggle('sel',y===x))});
