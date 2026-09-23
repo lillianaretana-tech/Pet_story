@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LillyTech Pet Stories Studio V6</title>
+<title>LillyTech Pet Stories Studio V6.2 Magazine</title>
 <style>
 :root{--navy:#102d47;--ink:#24323b;--paper:#fffdf8;--sand:#f3ede3;--coral:#df7d68;--mustard:#e5b75f;--sky:#9ec7d8;--line:#ded7cc;--muted:#72808a}
 *{box-sizing:border-box} body{margin:0;background:#e9edef;color:var(--ink);font-family:Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
@@ -116,10 +116,39 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
 .cropControls{display:flex;flex-direction:column;gap:10px}.cropArrows{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.cropArrows button{padding:11px}.cropHelp{font-size:12px;color:#61717e;line-height:1.5}
 .cloudBox{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.cloudBox input{width:210px;padding:8px;border-radius:9px;border:1px solid #ccd4da}.cloudMsg{font-size:10px;color:#dce7ef;max-width:260px}
 .bookCard{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #e1ddd6}.bookMini{width:58px;height:58px;border-radius:10px;background:#edf2f4;display:grid;place-items:center;font-size:24px;overflow:hidden}.bookMini img{width:100%;height:100%;object-fit:cover}.bookInfo b,.bookInfo small{display:block}.bookInfo small{color:var(--muted);margin-top:4px}.bookActions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.bookActions .btn{border:1px solid #d9dddf;padding:7px 9px}
+
+/* V6.2 · PET STORIES MAGAZINE */
+.magPage{background-color:#fff9ef!important;background-image:linear-gradient(135deg,rgba(229,183,95,.09),transparent 30%),radial-gradient(circle at 94% 8%,rgba(223,125,104,.13) 0 5%,transparent 5.5%),radial-gradient(circle at 7% 92%,rgba(158,199,216,.17) 0 7%,transparent 7.5%)!important}
+.magPage:after{content:"";position:absolute;left:24px;bottom:27px;width:62px;height:8px;border-radius:50%;background:rgba(223,125,104,.16);transform:rotate(-8deg);z-index:0}
+.magIssue{font-size:8px;letter-spacing:.22em;font-weight:900;color:#87929a;border-bottom:1px solid rgba(16,45,71,.13);padding-bottom:7px;margin-bottom:18px;text-transform:uppercase}
+.magPage h2{letter-spacing:-.035em;text-shadow:0 2px 0 #fff}.magPage .tag{box-shadow:3px 4px 0 rgba(16,45,71,.11)}
+.magPage .copy{background:rgba(255,255,255,.72);padding:10px 13px;border-left:3px solid var(--coral);border-radius:0 12px 12px 0;margin:8px 0 4px}
+.magPage img{border:8px solid #fff;box-shadow:0 12px 25px rgba(36,50,59,.18);background:#fff}
+.magPage .photoHero{border-radius:4px 18px 4px 18px}.mag1 .photoHero{border-radius:20px 3px 20px 3px}.mag2 .photoHero{border-radius:3px 28px 3px 3px}.mag3 .photoHero{border-radius:28px 3px 3px 3px}
+.magPage .gallery3,.magPage .gallery4,.magPage .collage,.magPage .photoOnlyGrid{gap:12px}
+.magQuote{position:absolute;right:35px;bottom:26px;color:var(--coral);font-family:Georgia,serif;font-size:11px;font-style:italic;letter-spacing:.02em;z-index:2}
+.magPage .pageNo{background:var(--navy);color:#fff;border-radius:50%;width:24px;height:24px;display:grid;place-items:center;bottom:18px;right:18px;font-weight:bold}
+.mag2 .tag{background:var(--sky)}.mag3 .tag{background:#efb2a6}.mag0 .tag{background:#f0ca7b}
+.backCover,.backCoverPrint{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--navy);background:#f8e8d5!important;position:relative;overflow:hidden}
+.backCover:before,.backCoverPrint:before{content:"";position:absolute;inset:18px;border:2px solid rgba(16,45,71,.18);border-radius:42% 58% 47% 53%/55% 45% 55% 45%}
+.backPaw{font-size:66px;filter:grayscale(1);opacity:.16}.backLine{font-size:10px;letter-spacing:.24em;text-transform:uppercase;font-weight:900;color:var(--coral);margin-top:14px}.backCover h2,.backCoverPrint h2{font-family:Georgia,serif;font-size:58px;margin:12px 0 5px}.backCover p,.backCoverPrint p{font-family:Georgia,serif;font-size:17px;max-width:430px;line-height:1.55}.backBadge{position:absolute;bottom:45px;border-top:1px solid rgba(16,45,71,.22);padding-top:10px;font-size:10px;letter-spacing:.16em;text-transform:uppercase}.backBadge b{font-size:15px}
 @media(max-width:720px){.cropLayout{grid-template-columns:1fr}.cropStage{height:55vh;min-height:330px}.cropControls{display:grid;grid-template-columns:1fr 1fr}}
+
+@media print{
+ .printPage.magPage{background-color:#fff9ef!important}
+ .printPage.magPage .magIssue{font-size:2.4mm!important;margin-bottom:4mm!important;padding-bottom:2mm!important}
+ .printPage.magPage .copy{font-size:4mm!important;line-height:1.5!important;padding:3mm 4mm!important;margin:2.5mm 0 1mm!important;border-left-width:1.2mm!important}
+ .printPage.magPage img{border:2.2mm solid #fff!important;box-shadow:0 3mm 7mm rgba(36,50,59,.16)!important}
+ .printPage.magPage .photoHero{height:124mm!important}
+ .printPage.magPage .gallery3{grid-template-rows:52mm 52mm!important}.printPage.magPage .gallery4{grid-template-rows:50mm 50mm!important}
+ .printPage.magPage .collage img{height:104mm!important}.printPage.magPage .photoOnlyGrid img{height:101mm!important}.printPage.magPage .photoOnlyGrid.one img{height:210mm!important}
+ .printPage.magPage .magQuote{right:15mm!important;bottom:8mm!important;font-size:3.2mm!important}.printPage.magPage .pageNo{right:7mm!important;bottom:6mm!important;width:7mm!important;height:7mm!important;font-size:2.8mm!important}
+ .fullbook .backCoverPrint{display:flex!important;width:210mm!important;height:297mm!important;min-height:297mm!important;padding:22mm!important;break-after:auto!important;page-break-after:auto!important}
+ .backCoverPrint h2{font-size:22mm!important}.backCoverPrint p{font-size:5mm!important;max-width:145mm!important}.backCoverPrint .backPaw{font-size:24mm!important}.backCoverPrint .backLine{font-size:3mm!important}.backCoverPrint .backBadge{bottom:20mm!important;font-size:3mm!important}.backCoverPrint .backBadge b{font-size:4.5mm!important}
+}
 </style></head>
 <body>
-<header><div class="brand"><small>LillyTech</small>Pet Stories Studio V6</div><div class="actions"><span style="font-size:11px;align-self:center;color:#f3cb7d">💾 V6 · biblioteca local + nube segura</span><button class="btn ghost" id="loginBtn">Entrar</button><button class="btn ghost" id="cloudSaveBtn">☁ Guardar nube</button><button class="btn ghost" id="booksBtn">📚 Mis libros</button><button class="btn ghost" id="newBtn">Nuevo</button><button class="btn ghost" id="dupBtn">Duplicar</button><button class="btn gold" id="printBtn">Exportar / PDF</button></div></header>
+<header><div class="brand"><small>LillyTech</small>Pet Stories Studio V6.2</div><div class="actions"><span style="font-size:11px;align-self:center;color:#f3cb7d">✨ Edición Magazine · biblioteca segura</span><button class="btn ghost" id="loginBtn">Entrar</button><button class="btn ghost" id="cloudSaveBtn">☁ Guardar nube</button><button class="btn ghost" id="booksBtn">📚 Mis libros</button><button class="btn ghost" id="newBtn">Nuevo</button><button class="btn ghost" id="dupBtn">Duplicar</button><button class="btn gold" id="printBtn">Exportar revista / PDF</button></div></header>
 <div class="app"><aside>
 <div class="tabs"><button class="tab active" data-tab="pet">Mascota</button><button class="tab" data-tab="look">Estilo</button><button class="tab" data-tab="chapters">Historias</button></div>
 <section class="panel active" id="pet"><h3>La estrella del libro</h3>
@@ -176,6 +205,7 @@ function decorHTML(){
  </svg></div>`;
 }
 function coverHTML(cls='sheet cover'){return `<section class="${cls}"><div class="coverImg" style="background-image:url('${p.cover||''}')"></div><div class="shade"></div><div class="coverText"><div class="kicker">LillyTech Pet Stories · Su historia, a su manera</div><h1>${esc(p.name||'Mi mascota')}</h1><p>${esc(p.coverline||'Una historia que merece quedarse.')}</p></div></section>`}
+function backCoverHTML(cls='sheet backCover'){return `<section class="${cls}">${decorHTML()}<div class="backPaw">🐾</div><div class="backLine">Cada huella cuenta una historia</div><h2>${esc(p.name||'Mi mascota')}</h2><p>Una colección de momentos, aventuras y muchísimo amor.</p><div class="backBadge">LillyTech<br><b>Pet Stories</b></div></section>`}
 function photoPos(c,i){let q=(c.photoPos||[])[i]||{x:50,y:50,z:1};return `object-position:${q.x}% ${q.y}%;transform:scale(${q.z||1});transform-origin:${q.x}% ${q.y}%`}
 function mainPhotoHTML(pics,c,offset=0){
  if(!pics.length)return '';
@@ -186,11 +216,11 @@ function mainPhotoHTML(pics,c,offset=0){
 }
 function storyHTML(c,n,cls='sheet story'){
   let pics=(c.photos||[]).slice(0,4);
-  return `<section class="${cls}">${decorHTML()}<span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="date">${fmt(c.date)}</div><span class="scribble">${c.cat==='Travesura'?'archivo oficial de travesuras ✦':c.cat==='Momento épico'?'esto merecía una página ✦':'un momento para guardar ✦'}</span><div class="copy">${esc(c.text||c.raw)}</div>${mainPhotoHTML(pics,c,0)}<span class="pageNo">${n}</span></section>`
+  return `<section class="${cls} magPage mag${n%4}">${decorHTML()}<div class="magIssue">PET STORIES · EDICIÓN DE ${esc(p.name||'MI MASCOTA')}</div><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="date">${fmt(c.date)}</div><span class="scribble">${c.cat==='Travesura'?'archivo oficial de travesuras ✦':c.cat==='Momento épico'?'esto merecía una página ✦':'un momento para guardar ✦'}</span><div class="copy">${esc(c.text||c.raw)}</div>${mainPhotoHTML(pics,c,0)}<div class="magQuote">memorias para volver a sonreír</div><span class="pageNo">${n}</span></section>`
 }
 function photoPageHTML(c,pics,n,part,cls='sheet story photoPage'){
   let one=pics.length===1?' one':'';
-  return `<section class="${cls}">${decorHTML()}<span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="continuation">Más fotos de este recuerdo · ${part}</div><div class="photoOnlyGrid${one}">${pics.map((x,i)=>`<img src="${x}" style="${photoPos(c,4+(part-2)*4+i)}">`).join('')}</div><span class="pageNo">${n}</span></section>`
+  return `<section class="${cls} magPage mag${n%4}">${decorHTML()}<div class="magIssue">ÁLBUM DE ${esc(p.name||'MI MASCOTA')} · MOMENTOS FAVORITOS</div><span class="tag">${esc(c.cat)}</span><h2>${esc(c.title)}</h2><div class="continuation">Más fotos de este recuerdo · ${part}</div><div class="photoOnlyGrid${one}">${pics.map((x,i)=>`<img src="${x}" style="${photoPos(c,4+(part-2)*4+i)}">`).join('')}</div><div class="magQuote">la felicidad también tiene cuatro patas</div><span class="pageNo">${n}</span></section>`
 }
 function pages(){
   let out=[{kind:'cover'}];
@@ -199,10 +229,11 @@ function pages(){
     let rest=(c.photos||[]).slice(4), part=2;
     while(rest.length){out.push({kind:'photos',c,photos:rest.splice(0,4),part:part++})}
   });
-  return out;
+  out.push({kind:'back'});return out;
 }
 function pageHTML(x,n,cls){
   if(x.kind==='cover')return coverHTML(cls||'sheet cover');
+  if(x.kind==='back')return backCoverHTML(cls||'sheet backCover');
   if(x.kind==='story')return storyHTML(x.c,n,cls||'sheet story');
   return photoPageHTML(x.c,x.photos,n,x.part,cls||'sheet story photoPage');
 }
@@ -230,7 +261,7 @@ window.deleteChapterPhoto=i=>{editingPhotos.splice(i,1);editingPhotoPos.splice(i
 window.moveChapterPhoto=(i,d)=>{let j=i+d;if(j<0||j>=editingPhotos.length)return;[editingPhotos[i],editingPhotos[j]]=[editingPhotos[j],editingPhotos[i]];[editingPhotoPos[i],editingPhotoPos[j]]=[editingPhotoPos[j],editingPhotoPos[i]];renderPhotoManager()};
 window.replaceChapterPhoto=i=>{let inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=async()=>{if(inp.files[0]){editingPhotos[i]=(await files(inp.files))[0];editingPhotoPos[i]=editingPhotoPos[i]||{x:50,y:50};renderPhotoManager()}};inp.click()};
 function render(){book.style.setProperty('--titleFont',`"${p.font}"`);let ps=pages();idx=Math.min(idx,Math.max(0,Math.ceil(ps.length/2)-1));let start=idx*2, pair=ps.slice(start,start+2);spread.innerHTML=pair.map((x,i)=>pageHTML(x,start+i+1)).join('');if(pair.length===1)spread.insertAdjacentHTML('beforeend','<section class="sheet"></section>');count.textContent=`Páginas ${start+1}–${Math.min(start+2,ps.length)} de ${ps.length}`;prev.disabled=idx===0;next.disabled=start+2>=ps.length;
-fullbook.innerHTML=ps.map((x,i)=>pageHTML(x,i+1,x.kind==='cover'?'printPage coverPrint':x.kind==='photos'?'printPage story photoPage':'printPage story')).join('');renderList();sync();renderCoverManager()}
+fullbook.innerHTML=ps.map((x,i)=>pageHTML(x,i+1,x.kind==='cover'?'printPage coverPrint':x.kind==='back'?'printPage backCoverPrint':x.kind==='photos'?'printPage story photoPage':'printPage story')).join('');renderList();sync();renderCoverManager()}
 function renderList(){chapterList.innerHTML='';p.chapters.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(c=>{let d=document.createElement('div');d.className='chapter';d.innerHTML=`<div><b>${esc(c.title)}</b><small>${fmt(c.date)} · ${esc(c.cat)}</small></div><div><button class="btn" onclick="editC('${c.id}')">Editar</button><button class="btn" onclick="delC('${c.id}')">×</button></div>`;chapterList.appendChild(d)})}
 function sync(){$('name').value=p.name||'';type.value=p.type||'Perro';sex.value=p.sex||'Macho';birth.value=p.birth||'';arrival.value=p.arrival||'';coverline.value=p.coverline||'';font.value=p.font||'Trebuchet MS';document.querySelectorAll('.style').forEach(x=>x.classList.toggle('sel',x.dataset.style===p.style))}
 ['name','type','sex','birth','arrival','coverline','font'].forEach(id=>$(id).addEventListener(id==='name'||id==='coverline'?'input':'change',()=>{p[id]= $(id).value;save();render()}));
