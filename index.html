@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LillyTech Pet Stories Studio V6.2 Magazine</title>
+<title>LillyTech Pet Stories Studio V6.3 Magazine</title>
 <style>
 :root{--navy:#102d47;--ink:#24323b;--paper:#fffdf8;--sand:#f3ede3;--coral:#df7d68;--mustard:#e5b75f;--sky:#9ec7d8;--line:#ded7cc;--muted:#72808a}
 *{box-sizing:border-box} body{margin:0;background:#e9edef;color:var(--ink);font-family:Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
@@ -157,7 +157,7 @@ dialog{border:0;border-radius:18px;padding:0;width:min(630px,calc(100% - 20px));
 }
 </style></head>
 <body>
-<header><div class="brand"><small>LillyTech</small>Pet Stories Studio V6.2</div><div class="actions"><span style="font-size:11px;align-self:center;color:#f3cb7d">✨ Edición Magazine · biblioteca segura</span><button class="btn ghost" id="loginBtn">Entrar</button><button class="btn ghost" id="cloudSaveBtn">☁ Guardar nube</button><button class="btn ghost" id="booksBtn">📚 Mis libros</button><button class="btn ghost" id="newBtn">Nuevo</button><button class="btn ghost" id="dupBtn">Duplicar</button><button class="btn gold" id="printBtn">Exportar revista / PDF</button></div></header>
+<header><div class="brand"><small>LillyTech</small>Pet Stories Studio V6.3</div><div class="actions"><span style="font-size:11px;align-self:center;color:#f3cb7d">✨ Magazine · fotos proporcionales</span><button class="btn ghost" id="loginBtn">Entrar</button><button class="btn ghost" id="cloudSaveBtn">☁ Guardar nube</button><button class="btn ghost" id="booksBtn">📚 Mis libros</button><button class="btn ghost" id="newBtn">Nuevo</button><button class="btn ghost" id="dupBtn">Duplicar</button><button class="btn gold" id="printBtn">Exportar revista / PDF</button></div></header>
 <div class="app"><aside>
 <div class="tabs"><button class="tab active" data-tab="pet">Mascota</button><button class="tab" data-tab="look">Estilo</button><button class="tab" data-tab="chapters">Historias</button></div>
 <section class="panel active" id="pet"><h3>La estrella del libro</h3>
@@ -282,6 +282,19 @@ spreadMode.onclick=()=>{book.style.display='block';fullbook.classList.remove('ac
 fullMode.onclick=()=>{book.style.display='none';fullbook.classList.add('active');nav.style.display='none';fullMode.classList.add('active');spreadMode.classList.remove('active')};
 function loadExternalScript(src,test){if(test())return Promise.resolve();return new Promise((ok,no)=>{let old=document.querySelector(`script[data-pdf-lib="${src}"]`);if(old){old.addEventListener('load',ok,{once:true});old.addEventListener('error',no,{once:true});return}let s=document.createElement('script');s.src=src;s.dataset.pdfLib=src;s.onload=ok;s.onerror=()=>no(new Error('No se pudo cargar el generador de PDF'));document.head.appendChild(s)})}
 async function waitForImages(root){let imgs=[...root.querySelectorAll('img')];await Promise.all(imgs.map(img=>img.complete&&img.naturalWidth?img.decode?.().catch(()=>{}):new Promise(ok=>{img.onload=ok;img.onerror=ok;setTimeout(ok,15000)})))}
+async function normalizeImagesForPDF(root){
+ let imgs=[...root.querySelectorAll('img')];
+ for(let i=0;i<imgs.length;i++){
+  let img=imgs[i];if(!img.naturalWidth||!img.naturalHeight)continue;
+  let cs=getComputedStyle(img),bw=(parseFloat(cs.borderLeftWidth)||0)+(parseFloat(cs.borderRightWidth)||0),bh=(parseFloat(cs.borderTopWidth)||0)+(parseFloat(cs.borderBottomWidth)||0);
+  let tw=Math.max(1,Math.round(img.getBoundingClientRect().width-bw)),th=Math.max(1,Math.round(img.getBoundingClientRect().height-bh)),qualityScale=1.5;
+  let canvas=document.createElement('canvas');canvas.width=Math.round(tw*qualityScale);canvas.height=Math.round(th*qualityScale);let ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  let pos=(img.style.objectPosition||cs.objectPosition||'50% 50%').match(/(-?[\d.]+)%\s+(-?[\d.]+)%/),px=pos?Number(pos[1]):50,py=pos?Number(pos[2]):50;
+  let zm=(img.style.transform||'').match(/scale\(([\d.]+)\)/),zoom=zm?Math.max(1,Number(zm[1])):1;
+  let scale=Math.max(canvas.width/img.naturalWidth,canvas.height/img.naturalHeight)*zoom,dw=img.naturalWidth*scale,dh=img.naturalHeight*scale,dx=(canvas.width-dw)*(px/100),dy=(canvas.height-dh)*(py/100);
+  ctx.drawImage(img,dx,dy,dw,dh);img.src=canvas.toDataURL('image/jpeg',0.9);img.style.objectFit='fill';img.style.objectPosition='50% 50%';img.style.transform='none';img.style.transformOrigin='center';await img.decode?.().catch(()=>{});canvas.width=1;canvas.height=1;
+ }
+}
 printBtn.onclick=async()=>{
  let oldText=printBtn.textContent,stage=null;
  printBtn.disabled=true;printBtn.textContent='Preparando PDF…';cloudLabel('Preparando revista para descargar…');
@@ -290,7 +303,7 @@ printBtn.onclick=async()=>{
   await loadExternalScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js',()=>!!window.jspdf?.jsPDF);
   if(document.fonts?.ready)await document.fonts.ready;
   stage=document.createElement('div');stage.className='pdfCapture';stage.setAttribute('aria-hidden','true');stage.innerHTML=fullbook.innerHTML;document.body.appendChild(stage);
-  await waitForImages(stage);
+  await waitForImages(stage);cloudLabel('Preparando fotografías sin deformarlas…');await normalizeImagesForPDF(stage);
   let pages=[...stage.querySelectorAll('.printPage')];if(!pages.length)throw new Error('No encontré las páginas de la revista');
   let PDF=window.jspdf.jsPDF,doc=new PDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
   for(let i=0;i<pages.length;i++){
